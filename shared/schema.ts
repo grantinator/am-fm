@@ -28,6 +28,7 @@ export const events = pgTable("events", {
   neighborhood: text("neighborhood"),
   description: text("description"),
   imageUrl: text("image_url"),
+  price: integer("price").default(0), // Added price field
   attendees: integer("attendees").default(0),
   createdAt: timestamp("created_at").defaultNow(),
 });

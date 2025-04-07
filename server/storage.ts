@@ -58,6 +58,7 @@ export class MemStorage implements IStorage {
         neighborhood: "Potrero Hill",
         description: "Join us for an amazing night with The Midnight Drifters as they return to SF to celebrate their new EP release! Special guests Ghost Notes will be opening the show.",
         imageUrl: "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80",
+        price: 12,
         attendees: 0,
         createdAt: new Date()
       },
@@ -72,6 +73,7 @@ export class MemStorage implements IStorage {
         neighborhood: "Hayes Valley",
         description: "Electric Pulse returns to SF for a night of electronic beats and visual spectacle, with Future Memory opening.",
         imageUrl: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80",
+        price: 15,
         attendees: 0,
         createdAt: new Date()
       },
@@ -86,6 +88,7 @@ export class MemStorage implements IStorage {
         neighborhood: "Mission",
         description: "An intimate acoustic night featuring local artists in a cozy Mission District house setting. BYOB.",
         imageUrl: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80",
+        price: 5,
         attendees: 0,
         createdAt: new Date()
       },
@@ -100,6 +103,7 @@ export class MemStorage implements IStorage {
         neighborhood: "Hayes Valley",
         description: "A night of classic and modern jazz interpretations by the renowned SF Jazz Collective. No cover charge.",
         imageUrl: "https://images.unsplash.com/photo-1598387993281-cecf8b71a8f8?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80",
+        price: 0,
         attendees: 0,
         createdAt: new Date()
       },
@@ -114,6 +118,7 @@ export class MemStorage implements IStorage {
         neighborhood: "SoMa",
         description: "High-energy punk rock night featuring Toxic Wasteland's album release party with special guests The Misfits.",
         imageUrl: "https://images.unsplash.com/photo-1563841930606-67e2bce48b78?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80",
+        price: 10,
         attendees: 0,
         createdAt: new Date()
       },
@@ -128,6 +133,7 @@ export class MemStorage implements IStorage {
         neighborhood: "NoPa",
         description: "Sunset Riders celebrates the release of their new album 'Golden Hour' with a full performance and special guest openers.",
         imageUrl: "https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80",
+        price: 15,
         attendees: 0,
         createdAt: new Date()
       },
@@ -142,6 +148,7 @@ export class MemStorage implements IStorage {
         neighborhood: "Mission",
         description: "A wild night of garage rock and punk at this Mission dive bar. Cash only at the door.",
         imageUrl: "https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80",
+        price: 8,
         attendees: 0,
         createdAt: new Date()
       }
@@ -210,7 +217,9 @@ export class MemStorage implements IStorage {
       endTime: insertEvent.endTime || null,
       neighborhood: insertEvent.neighborhood || null,
       description: insertEvent.description || null,
-      imageUrl: insertEvent.imageUrl || null
+      imageUrl: insertEvent.imageUrl || null,
+      // Ensure price is always a number or null
+      price: insertEvent.price !== undefined ? insertEvent.price : null
     };
     
     this.events.set(id, newEvent);
