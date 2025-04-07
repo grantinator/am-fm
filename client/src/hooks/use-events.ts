@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { queryClient } from "@/lib/queryClient";
 import { EventWithGenres, EventFormData } from "@shared/schema";
-import { format, isSameDay, isThisWeek, isToday } from "date-fns";
+import { format } from "date-fns";
 
 // Get all events
 export function useEvents() {
@@ -72,65 +72,8 @@ export function useSearchEvents(initialQuery = "") {
   };
 }
 
-// Filter events
-export function useFilteredEvents() {
-  const [filters, setFilters] = useState<{
-    neighborhood?: string;
-    genre?: string;
-    timeframe?: "all" | "today" | "thisWeekend";
-  }>({
-    timeframe: "all",
-  });
-  
-  const { data: allEvents, isLoading } = useEvents();
-  
-  // Apply filters client-side for more responsive UI
-  const filteredEvents = !allEvents ? [] : allEvents.filter(event => {
-    // Filter by neighborhood
-    if (filters.neighborhood && event.neighborhood !== filters.neighborhood) {
-      return false;
-    }
-    
-    // Filter by genre
-    if (filters.genre && !event.genres.includes(filters.genre)) {
-      return false;
-    }
-    
-    // Filter by timeframe
-    if (filters.timeframe === "today" && !isToday(new Date(event.date))) {
-      return false;
-    }
-    
-    if (filters.timeframe === "thisWeekend") {
-      const date = new Date(event.date);
-      const isWeekend = date.getDay() === 0 || date.getDay() === 6; // Sunday or Saturday
-      return isThisWeek(date) && isWeekend;
-    }
-    
-    return true;
-  });
-  
-  return {
-    events: filteredEvents,
-    isLoading,
-    filters,
-    setFilters,
-  };
-}
-
 // Format date for display
 export function formatEventDate(date: Date | string) {
   const eventDate = typeof date === "string" ? new Date(date) : date;
-  
-  // Return different formats based on how soon the event is
-  if (isToday(eventDate)) {
-    return "TODAY";
-  } else if (isSameDay(eventDate, new Date(Date.now() + 86400000))) {
-    return "TOMORROW";
-  } else if (isThisWeek(eventDate)) {
-    return "THIS WEEKEND";
-  }
-  
-  // Default format: "FRI, MAY 12"
   return format(eventDate, "EEE, MMM d").toUpperCase();
 }

@@ -49,7 +49,7 @@ export class MemStorage implements IStorage {
       [
         {
           title: "The Midnight Drifters w/ Ghost Notes",
-          date: new Date("2023-12-12T20:00:00"),
+          date: new Date("2025-04-08T20:00:00"),
           startTime: "8:00 PM",
           endTime: "11:00 PM",
           venueName: "Bottom of the Hill",
@@ -63,7 +63,7 @@ export class MemStorage implements IStorage {
       [
         {
           title: "Electric Pulse + Future Memory",
-          date: new Date("2023-12-13T21:30:00"),
+          date: new Date("2025-04-07T21:30:00"),
           startTime: "9:30 PM",
           endTime: "1:00 AM",
           venueName: "Rickshaw Stop",
@@ -77,7 +77,7 @@ export class MemStorage implements IStorage {
       [
         {
           title: "Mission House Party: Acoustic Night",
-          date: new Date("2023-12-14T19:00:00"),
+          date: new Date("2025-04-07T19:00:00"),
           startTime: "7:00 PM",
           endTime: "10:00 PM",
           venueName: "Secret Location",
@@ -91,7 +91,7 @@ export class MemStorage implements IStorage {
       [
         {
           title: "SF Jazz Collective",
-          date: new Date("2023-12-15T20:30:00"),
+          date: new Date("2025-04-08T20:30:00"),
           startTime: "8:30 PM",
           endTime: "11:00 PM",
           venueName: "Mr. Tipple's",
@@ -105,7 +105,7 @@ export class MemStorage implements IStorage {
       [
         {
           title: "Toxic Wasteland + The Misfits",
-          date: new Date("2023-12-19T21:00:00"),
+          date: new Date("2025-04-09T21:00:00"),
           startTime: "9:00 PM",
           endTime: "1:00 AM",
           venueName: "The Eagle",
@@ -119,7 +119,7 @@ export class MemStorage implements IStorage {
       [
         {
           title: "Sunset Riders Album Release",
-          date: new Date("2023-12-20T20:00:00"),
+          date: new Date("2025-04-09T20:00:00"),
           startTime: "8:00 PM",
           endTime: "11:30 PM",
           venueName: "The Independent",
@@ -129,6 +129,20 @@ export class MemStorage implements IStorage {
           imageUrl: "https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80",
         },
         ["Indie", "Pop"]
+      ],
+      [
+        {
+          title: "The Knockout Thursday Throwdown",
+          date: new Date("2025-04-10T21:00:00"),
+          startTime: "9:00 PM",
+          endTime: "1:00 AM",
+          venueName: "The Knockout",
+          venueAddress: "3223 Mission St, San Francisco, CA 94110",
+          neighborhood: "Mission",
+          description: "A wild night of garage rock and punk at this Mission dive bar. Cash only at the door.",
+          imageUrl: "https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80",
+        },
+        ["Rock", "Punk"]
       ]
     ];
 

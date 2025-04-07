@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "wouter";
 import { useEvents } from "@/hooks/use-events";
-import Filters from "@/components/Filters";
 import EventList from "@/components/EventList";
 
 export default function Home() {
@@ -27,9 +26,8 @@ export default function Home() {
   }
 
   return (
-    <>
-      <Filters />
+    <div className="max-w-2xl mx-auto">
       <EventList />
-    </>
+    </div>
   );
 }
