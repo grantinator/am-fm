@@ -1,3 +1,4 @@
+
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
@@ -99,28 +100,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
         
         eventData.date = combinedDate;
-      } 
+      } else if (typeof eventData.date === 'object' && eventData.date !== null) {
         // If it's a date-like object from JSON, convert to proper Date
-        else if (typeof eventData.date === 'object' && eventData.date !== null) {
-          if ('toISOString' in eventData.date) {
-            // It's already a Date object
-          } else {
-            // It's a date-like object (with year, month, day properties)
-            try {
-              eventData.date = new Date(eventData.date);
-            } catch (e) {
-              console.error('Error converting date object:', e);
-              return res.status(400).json({ 
-                message: "Invalid date object", 
-                errors: { date: { _errors: ["Invalid date format"] } }
-              });
-            }
+        if ('toISOString' in eventData.date) {
+          // It's already a Date object
+        } else {
+          // It's a date-like object (with year, month, day properties)
+          try {
+            eventData.date = new Date(eventData.date);
+          } catch (e) {
+            console.error('Error converting date object:', e);
+            return res.status(400).json({ 
+              message: "Invalid date object", 
+              errors: { date: { _errors: ["Invalid date format"] } }
+            });
           }
         }
-        
-        // Log the date for debugging
-        console.log('Processed date:', eventData.date);
       }
+      
+      // Log the date for debugging
+      console.log('Processed date:', eventData.date);
 
       // Validate event data
       const result = insertEventSchema.safeParse(eventData);
