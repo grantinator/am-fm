@@ -45,109 +45,126 @@ export class MemStorage implements IStorage {
   }
 
   private initMockEvents() {
-    const mockEvents: Array<[InsertEvent, string[]]> = [
-      [
-        {
-          title: "The Midnight Drifters w/ Ghost Notes",
-          date: new Date("2025-04-08T20:00:00"),
-          startTime: "8:00 PM",
-          endTime: "11:00 PM",
-          venueName: "Bottom of the Hill",
-          venueAddress: "1233 17th Street, San Francisco, CA 94107",
-          neighborhood: "Potrero Hill",
-          description: "Join us for an amazing night with The Midnight Drifters as they return to SF to celebrate their new EP release! Special guests Ghost Notes will be opening the show.",
-          imageUrl: "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80",
-        },
-        ["Indie", "Rock"]
-      ],
-      [
-        {
-          title: "Electric Pulse + Future Memory",
-          date: new Date("2025-04-07T21:30:00"),
-          startTime: "9:30 PM",
-          endTime: "1:00 AM",
-          venueName: "Rickshaw Stop",
-          venueAddress: "155 Fell St, San Francisco, CA 94102",
-          neighborhood: "Hayes Valley",
-          description: "Electric Pulse returns to SF for a night of electronic beats and visual spectacle, with Future Memory opening.",
-          imageUrl: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80",
-        },
-        ["Electronic", "DJ"]
-      ],
-      [
-        {
-          title: "Mission House Party: Acoustic Night",
-          date: new Date("2025-04-07T19:00:00"),
-          startTime: "7:00 PM",
-          endTime: "10:00 PM",
-          venueName: "Secret Location",
-          venueAddress: "Address provided day of show, Mission District",
-          neighborhood: "Mission",
-          description: "An intimate acoustic night featuring local artists in a cozy Mission District house setting. BYOB.",
-          imageUrl: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80",
-        },
-        ["Acoustic", "Folk"]
-      ],
-      [
-        {
-          title: "SF Jazz Collective",
-          date: new Date("2025-04-08T20:30:00"),
-          startTime: "8:30 PM",
-          endTime: "11:00 PM",
-          venueName: "Mr. Tipple's",
-          venueAddress: "39 Fell St, San Francisco, CA 94102",
-          neighborhood: "Hayes Valley",
-          description: "A night of classic and modern jazz interpretations by the renowned SF Jazz Collective. No cover charge.",
-          imageUrl: "https://images.unsplash.com/photo-1598387993281-cecf8b71a8f8?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80",
-        },
-        ["Jazz"]
-      ],
-      [
-        {
-          title: "Toxic Wasteland + The Misfits",
-          date: new Date("2025-04-09T21:00:00"),
-          startTime: "9:00 PM",
-          endTime: "1:00 AM",
-          venueName: "The Eagle",
-          venueAddress: "398 12th St, San Francisco, CA 94103",
-          neighborhood: "SoMa",
-          description: "High-energy punk rock night featuring Toxic Wasteland's album release party with special guests The Misfits.",
-          imageUrl: "https://images.unsplash.com/photo-1563841930606-67e2bce48b78?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80",
-        },
-        ["Punk", "Rock"]
-      ],
-      [
-        {
-          title: "Sunset Riders Album Release",
-          date: new Date("2025-04-09T20:00:00"),
-          startTime: "8:00 PM",
-          endTime: "11:30 PM",
-          venueName: "The Independent",
-          venueAddress: "628 Divisadero St, San Francisco, CA 94117",
-          neighborhood: "NoPa",
-          description: "Sunset Riders celebrates the release of their new album 'Golden Hour' with a full performance and special guest openers.",
-          imageUrl: "https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80",
-        },
-        ["Indie", "Pop"]
-      ],
-      [
-        {
-          title: "The Knockout Thursday Throwdown",
-          date: new Date("2025-04-10T21:00:00"),
-          startTime: "9:00 PM",
-          endTime: "1:00 AM",
-          venueName: "The Knockout",
-          venueAddress: "3223 Mission St, San Francisco, CA 94110",
-          neighborhood: "Mission",
-          description: "A wild night of garage rock and punk at this Mission dive bar. Cash only at the door.",
-          imageUrl: "https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80",
-        },
-        ["Rock", "Punk"]
-      ]
+    // Define the mock events directly as Event objects to avoid type inconsistencies
+    const events: Event[] = [
+      {
+        id: this.eventIdCounter++,
+        title: "The Midnight Drifters w/ Ghost Notes",
+        date: new Date("2025-04-08T20:00:00"),
+        startTime: "8:00 PM",
+        endTime: "11:00 PM",
+        venueName: "Bottom of the Hill",
+        venueAddress: "1233 17th Street, San Francisco, CA 94107",
+        neighborhood: "Potrero Hill",
+        description: "Join us for an amazing night with The Midnight Drifters as they return to SF to celebrate their new EP release! Special guests Ghost Notes will be opening the show.",
+        imageUrl: "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80",
+        attendees: 0,
+        createdAt: new Date()
+      },
+      {
+        id: this.eventIdCounter++,
+        title: "Electric Pulse + Future Memory",
+        date: new Date("2025-04-07T21:30:00"),
+        startTime: "9:30 PM",
+        endTime: "1:00 AM",
+        venueName: "Rickshaw Stop",
+        venueAddress: "155 Fell St, San Francisco, CA 94102",
+        neighborhood: "Hayes Valley",
+        description: "Electric Pulse returns to SF for a night of electronic beats and visual spectacle, with Future Memory opening.",
+        imageUrl: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80",
+        attendees: 0,
+        createdAt: new Date()
+      },
+      {
+        id: this.eventIdCounter++,
+        title: "Mission House Party: Acoustic Night",
+        date: new Date("2025-04-07T19:00:00"),
+        startTime: "7:00 PM",
+        endTime: "10:00 PM",
+        venueName: "Secret Location",
+        venueAddress: "Address provided day of show, Mission District",
+        neighborhood: "Mission",
+        description: "An intimate acoustic night featuring local artists in a cozy Mission District house setting. BYOB.",
+        imageUrl: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80",
+        attendees: 0,
+        createdAt: new Date()
+      },
+      {
+        id: this.eventIdCounter++,
+        title: "SF Jazz Collective",
+        date: new Date("2025-04-08T20:30:00"),
+        startTime: "8:30 PM",
+        endTime: "11:00 PM",
+        venueName: "Mr. Tipple's",
+        venueAddress: "39 Fell St, San Francisco, CA 94102",
+        neighborhood: "Hayes Valley",
+        description: "A night of classic and modern jazz interpretations by the renowned SF Jazz Collective. No cover charge.",
+        imageUrl: "https://images.unsplash.com/photo-1598387993281-cecf8b71a8f8?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80",
+        attendees: 0,
+        createdAt: new Date()
+      },
+      {
+        id: this.eventIdCounter++,
+        title: "Toxic Wasteland + The Misfits",
+        date: new Date("2025-04-09T21:00:00"),
+        startTime: "9:00 PM",
+        endTime: "1:00 AM",
+        venueName: "The Eagle",
+        venueAddress: "398 12th St, San Francisco, CA 94103",
+        neighborhood: "SoMa",
+        description: "High-energy punk rock night featuring Toxic Wasteland's album release party with special guests The Misfits.",
+        imageUrl: "https://images.unsplash.com/photo-1563841930606-67e2bce48b78?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80",
+        attendees: 0,
+        createdAt: new Date()
+      },
+      {
+        id: this.eventIdCounter++,
+        title: "Sunset Riders Album Release",
+        date: new Date("2025-04-09T20:00:00"),
+        startTime: "8:00 PM",
+        endTime: "11:30 PM",
+        venueName: "The Independent",
+        venueAddress: "628 Divisadero St, San Francisco, CA 94117",
+        neighborhood: "NoPa",
+        description: "Sunset Riders celebrates the release of their new album 'Golden Hour' with a full performance and special guest openers.",
+        imageUrl: "https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80",
+        attendees: 0,
+        createdAt: new Date()
+      },
+      {
+        id: this.eventIdCounter++,
+        title: "The Knockout Thursday Throwdown",
+        date: new Date("2025-04-10T21:00:00"),
+        startTime: "9:00 PM",
+        endTime: "1:00 AM",
+        venueName: "The Knockout",
+        venueAddress: "3223 Mission St, San Francisco, CA 94110",
+        neighborhood: "Mission",
+        description: "A wild night of garage rock and punk at this Mission dive bar. Cash only at the door.",
+        imageUrl: "https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80",
+        attendees: 0,
+        createdAt: new Date()
+      }
     ];
 
-    mockEvents.forEach(([event, genres]) => {
-      this.createEvent(event, genres);
+    // Create genre mappings
+    const genreMappings: [number, string[]][] = [
+      [1, ["Indie", "Rock"]],
+      [2, ["Electronic", "DJ"]],
+      [3, ["Acoustic", "Folk"]],
+      [4, ["Jazz"]],
+      [5, ["Punk", "Rock"]],
+      [6, ["Indie", "Pop"]],
+      [7, ["Rock", "Punk"]]
+    ];
+
+    // Add events and genres
+    events.forEach(event => {
+      this.events.set(event.id, event);
+    });
+
+    genreMappings.forEach(([eventId, genres]) => {
+      this.eventGenresMap.set(eventId, genres);
     });
   }
 
@@ -184,11 +201,16 @@ export class MemStorage implements IStorage {
 
   async createEvent(insertEvent: InsertEvent, genres: string[]): Promise<EventWithGenres> {
     const id = this.eventIdCounter++;
+    // Ensure all fields are properly set with correct types
     const newEvent: Event = {
       ...insertEvent,
       id,
       attendees: 0,
-      createdAt: new Date()
+      createdAt: new Date(),
+      endTime: insertEvent.endTime || null,
+      neighborhood: insertEvent.neighborhood || null,
+      description: insertEvent.description || null,
+      imageUrl: insertEvent.imageUrl || null
     };
     
     this.events.set(id, newEvent);

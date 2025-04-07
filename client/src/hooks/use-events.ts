@@ -1,8 +1,7 @@
-import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { queryClient } from "@/lib/queryClient";
-import { EventWithGenres, EventFormData } from "@shared/schema";
+import { EventWithGenres } from "@shared/schema";
 import { format } from "date-fns";
 
 // Get all events
@@ -54,22 +53,6 @@ export function useAttendEvent() {
       queryClient.invalidateQueries({ queryKey: ["/api/events"] });
     },
   });
-}
-
-// Search events
-export function useSearchEvents(initialQuery = "") {
-  const [query, setQuery] = useState(initialQuery);
-  
-  const searchResults = useQuery<EventWithGenres[]>({
-    queryKey: ["/api/events/search", query],
-    enabled: query.length > 0,
-  });
-  
-  return {
-    query,
-    setQuery,
-    ...searchResults,
-  };
 }
 
 // Format date for display

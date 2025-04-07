@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "wouter";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -47,12 +46,12 @@ export default function EventCard({ event }: EventCardProps) {
   
   return (
     <>
-      <Card className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer" onClick={handleCardClick}>
+      <Card className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer w-full" onClick={handleCardClick}>
         <div className="relative">
           <img 
             src={event.imageUrl || "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80"} 
             alt={event.title} 
-            className="w-full h-48 object-cover"
+            className="w-full h-48 sm:h-52 object-cover"
           />
           {formattedDate && (
             <div className={`absolute top-3 left-3 ${getLabelColor()} text-white text-sm font-bold px-2 py-1 rounded-md`}>
@@ -74,23 +73,23 @@ export default function EventCard({ event }: EventCardProps) {
         </div>
         <div className="p-4">
           <div className="flex items-start justify-between">
-            <div>
+            <div className="w-full">
               <p className="text-sm font-medium text-primary mb-1">
                 {format(new Date(event.date), "EEE, MMM d").toUpperCase()} • {event.startTime}
               </p>
               <h3 className="font-bold text-slate-800 text-lg mb-1">{event.title}</h3>
               <p className="text-slate-500 text-sm flex items-center">
-                <MapPin className="h-4 w-4 mr-1" /> {event.venueName}, {event.neighborhood}
+                <MapPin className="h-4 w-4 mr-1 flex-shrink-0" /> {event.venueName}, {event.neighborhood}
               </p>
             </div>
           </div>
           <div className="mt-4 flex items-center justify-between">
             <span className="text-slate-600 text-sm flex items-center">
-              <Users className="h-4 w-4 mr-1" /> {event.attendees || 0} going
+              <Users className="h-4 w-4 mr-1 flex-shrink-0" /> {event.attendees || 0} going
             </span>
-            <div className="flex space-x-1">
+            <div className="flex flex-wrap gap-1 justify-end">
               {event.genres.map((genre) => (
-                <Badge key={genre} variant="outline" className="bg-gray-100 text-slate-600 text-xs">
+                <Badge key={genre} variant="outline" className="bg-gray-100 text-slate-600 text-xs whitespace-nowrap">
                   {genre}
                 </Badge>
               ))}
