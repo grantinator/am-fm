@@ -2,6 +2,8 @@ import { log } from '../vite';
 import { VenueScraper, ScraperResult } from './base-scraper';
 import { KilowattScraper } from './kilowatt-scraper';
 import { HotelUtahScraper } from './hotel-utah-scraper';
+import { KnockoutScraper } from './knockout-scraper';
+import { LuckyHorseshoeScraper } from './lucky-horseshoe-scraper';
 import { IStorage } from '../storage';
 import { EventWithGenres } from '@shared/schema';
 import cron from 'node-cron';
@@ -14,9 +16,10 @@ export class VenueScraperManager {
   constructor(storage: IStorage) {
     this.storage = storage;
     this.scrapers = [
-      new KilowattScraper(),
       new HotelUtahScraper(),
-      // Add more venue scrapers here as they're created
+      new KnockoutScraper(),
+      new LuckyHorseshoeScraper(),
+      new KilowattScraper(),
     ];
   }
 
