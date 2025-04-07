@@ -48,6 +48,13 @@ export const insertEventSchema = createInsertSchema(events).omit({
 
 // Add additional validation
 export const eventFormSchema = insertEventSchema.extend({
+  // Accept both Date objects and strings that can be converted to valid dates
+  date: z.union([
+    z.date(),
+    z.string().refine((val) => !isNaN(new Date(val).getTime()), {
+      message: "Invalid date format",
+    }),
+  ]),
   genres: z.array(z.string()).min(1, "At least one genre is required"),
   image: z.instanceof(File, { message: "Event image is required" }).optional(),
 });

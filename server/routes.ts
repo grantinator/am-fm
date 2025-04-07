@@ -78,6 +78,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (req.file) {
         eventData.imageUrl = `/uploads/${req.file.filename}`;
       }
+      
+      // Ensure the date field is a proper Date object
+      if (eventData.date) {
+        // If it's a string, convert it to a Date
+        if (typeof eventData.date === 'string') {
+          const parsedDate = new Date(eventData.date);
+          if (isNaN(parsedDate.getTime())) {
+            console.error('Invalid date format:', eventData.date);
+            return res.status(400).json({ 
+              message: "Invalid date format", 
+              errors: { date: { _errors: ["Invalid date format"] } }
+            });
+          }
+          eventData.date = parsedDate;
+        } 
+        // If it's a date-like object from JSON, convert to proper Date
+        else if (typeof eventData.date === 'object' && eventData.date !== null) {
+          if ('toISOString' in eventData.date) {
+            // It's already a Date object
+          } else {
+            // It's a date-like object (with year, month, day properties)
+            try {
+              eventData.date = new Date(eventData.date);
+            } catch (e) {
+              console.error('Error converting date object:', e);
+              return res.status(400).json({ 
+                message: "Invalid date object", 
+                errors: { date: { _errors: ["Invalid date format"] } }
+              });
+            }
+          }
+        }
+        
+        // Log the date for debugging
+        console.log('Processed date:', eventData.date);
+      }
 
       // Validate event data
       const result = insertEventSchema.safeParse(eventData);

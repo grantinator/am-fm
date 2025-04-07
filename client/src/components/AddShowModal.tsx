@@ -95,9 +95,23 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
         formData.append("image", data.image);
       }
       
-      // Convert date to ISO string for backend
+      // Ensure date is a proper Date object
+      let dateObj = data.date;
+      if (typeof dateObj === 'string') {
+        dateObj = new Date(dateObj);
+        // Validate date
+        if (isNaN(dateObj.getTime())) {
+          console.error("Invalid date:", dateObj);
+          throw new Error("Invalid date format");
+        }
+      }
+      
+      console.log("Date before submission:", dateObj);
+      
+      // Prepare form data with properly formatted date
       const eventData = {
         ...data,
+        date: dateObj,
         // Use the form's genres directly (they should be synced with selectedGenres)
         genres: data.genres,
       };
@@ -183,7 +197,7 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
                 id="date"
                 type="date"
                 {...form.register("date", {
-                  valueAsDate: true,
+                  setValueAs: (value: string) => new Date(value),
                 })}
               />
               {form.formState.errors.date && (
