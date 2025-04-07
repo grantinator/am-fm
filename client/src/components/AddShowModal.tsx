@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,10 +40,46 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
       genres: [],
       price: 0,
     },
+    mode: "onChange", // Validate on change for immediate feedback
   });
+  
+  // Watch for genres changes in the form
+  useEffect(() => {
+    // Initialize the form with any selected genres
+    if (selectedGenres.length > 0) {
+      form.setValue("genres", selectedGenres);
+    }
+    
+    // Setup a subscription to watch for genre changes
+    const subscription = form.watch((value, { name }) => {
+      // If the genres field changed in the form, update our local state
+      if (name === "genres") {
+        const formGenres = value.genres as string[] | undefined;
+        if (formGenres && formGenres.length > 0 && JSON.stringify(formGenres) !== JSON.stringify(selectedGenres)) {
+          setSelectedGenres(formGenres);
+        }
+      }
+    });
+    
+    // Cleanup subscription
+    return () => subscription.unsubscribe();
+  }, [form, selectedGenres]);
   
   const onSubmit = async (data: EventFormData) => {
     try {
+      // Debug genres validation
+      console.log("Form data genres:", data.genres);
+      console.log("Selected genres state:", selectedGenres);
+      
+      // Check if genres are empty and manually set them if needed
+      if (!data.genres || data.genres.length === 0) {
+        if (selectedGenres.length > 0) {
+          // If we have selected genres in state but not in form data, use those
+          form.setValue("genres", selectedGenres);
+          data.genres = selectedGenres;
+        }
+      }
+      
       const formData = new FormData();
       
       // Add image if exists
@@ -54,7 +90,8 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
       // Convert date to ISO string for backend
       const eventData = {
         ...data,
-        genres: selectedGenres,
+        // Use the form's genres directly (they should be synced with selectedGenres)
+        genres: data.genres,
       };
       
       // Add event data as JSON
@@ -83,11 +120,13 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
   };
   
   const handleGenreChange = (genre: string) => {
-    setSelectedGenres(prev => 
-      prev.includes(genre)
-        ? prev.filter(g => g !== genre)
-        : [...prev, genre]
-    );
+    const updatedGenres = selectedGenres.includes(genre)
+      ? selectedGenres.filter(g => g !== genre)
+      : [...selectedGenres, genre];
+    
+    setSelectedGenres(updatedGenres);
+    // Also update the form value directly
+    form.setValue("genres", updatedGenres);
   };
   
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
