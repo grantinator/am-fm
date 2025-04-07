@@ -7,30 +7,31 @@ import EventCard from "./EventCard";
 
 export default function EventList() {
   const { data: allEvents, isLoading } = useEvents();
-  
+
   // Group events by date
   const eventsByDate = useMemo(() => {
     const grouped: Record<string, EventWithGenres[]> = {};
-    
+
     if (allEvents) {
       // Sort events by date
       const sortedEvents = [...allEvents].sort((a, b) => 
         new Date(a.date).getTime() - new Date(b.date).getTime()
       );
-      
-      // Group by date
+
+      // Group by date, using the original event date for key
       sortedEvents.forEach(event => {
-        const dateKey = format(new Date(event.date), 'yyyy-MM-dd');
+        const eventDate = new Date(event.date);
+        const dateKey = format(eventDate, 'yyyy-MM-dd');
         if (!grouped[dateKey]) {
           grouped[dateKey] = [];
         }
         grouped[dateKey].push(event);
       });
     }
-    
+
     return grouped;
   }, [allEvents]);
-  
+
   if (isLoading) {
     return (
       <div className="space-y-6 w-full">
@@ -47,7 +48,7 @@ export default function EventList() {
       </div>
     );
   }
-  
+
   if (!allEvents || allEvents.length === 0) {
     return (
       <div className="text-center py-10">
@@ -56,15 +57,16 @@ export default function EventList() {
       </div>
     );
   }
-  
+
   return (
     <div className="space-y-8 w-full">
       {Object.entries(eventsByDate).map(([dateKey, dateEvents]) => (
         <div key={dateKey} className="space-y-4 w-full">
           <h2 className="date-header font-bold text-xl pb-2 w-full">
-            {format(new Date(dateKey), 'MMMM d, yyyy')}
+            {/* Use the date from the first event in the group */}
+            {format(new Date(dateEvents[0].date), 'MMMM d, yyyy')}
           </h2>
-          
+
           <div className="space-y-4 w-full">
             {dateEvents.map((event) => (
               <div key={event.id} className="w-full">
