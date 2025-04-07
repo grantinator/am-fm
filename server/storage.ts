@@ -22,7 +22,6 @@ export interface IStorage {
   getEventsByNeighborhood(neighborhood: string): Promise<EventWithGenres[]>;
   getEventsByGenre(genre: string): Promise<EventWithGenres[]>;
   getEventsByDate(startDate: Date, endDate?: Date): Promise<EventWithGenres[]>;
-  searchEvents(query: string): Promise<EventWithGenres[]>;
   incrementAttendees(eventId: number): Promise<void>;
 }
 
@@ -91,9 +90,7 @@ export class MemStorage implements IStorage {
   }
 
   async getAllEvents(): Promise<EventWithGenres[]> {
-    // Filter out any Lucky Horseshoe events
     return Array.from(this.events.values())
-      .filter(event => event.venueName !== 'The Lucky Horseshoe')
       .map(event => this.attachGenresToEvent(event))
       .sort((a, b) => a.date.getTime() - b.date.getTime());
   }
@@ -107,11 +104,6 @@ export class MemStorage implements IStorage {
   }
 
   async createEvent(insertEvent: InsertEvent, genres: string[]): Promise<EventWithGenres> {
-    // Skip creating events for Lucky Horseshoe
-    if (insertEvent.venueName === 'The Lucky Horseshoe') {
-      throw new Error('Events from The Lucky Horseshoe are not supported');
-    }
-    
     const id = this.eventIdCounter++;
     // Ensure all fields are properly set with correct types
     const newEvent: Event = {
@@ -173,9 +165,6 @@ export class MemStorage implements IStorage {
     
     return Array.from(this.events.values())
       .filter(event => {
-        // Exclude Lucky Horseshoe events
-        if (event.venueName === 'The Lucky Horseshoe') return false;
-        
         // Search in title, venue, neighborhood, description
         return (
           event.title.toLowerCase().includes(lowerQuery) ||
