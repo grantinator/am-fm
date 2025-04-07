@@ -61,20 +61,27 @@ export class MemStorage implements IStorage {
   }
 
   async getAllEvents(): Promise<EventWithGenres[]> {
+    // Filter out any Lucky Horseshoe events
     return Array.from(this.events.values())
+      .filter(event => event.venueName !== 'The Lucky Horseshoe')
       .map(event => this.attachGenresToEvent(event))
       .sort((a, b) => a.date.getTime() - b.date.getTime());
   }
 
   async getEvent(id: number): Promise<EventWithGenres | undefined> {
     const event = this.events.get(id);
-    if (!event) {
+    if (!event || event.venueName === 'The Lucky Horseshoe') {
       return undefined;
     }
     return this.attachGenresToEvent(event);
   }
 
   async createEvent(insertEvent: InsertEvent, genres: string[]): Promise<EventWithGenres> {
+    // Skip creating events for Lucky Horseshoe
+    if (insertEvent.venueName === 'The Lucky Horseshoe') {
+      throw new Error('Events from The Lucky Horseshoe are not supported');
+    }
+    
     const id = this.eventIdCounter++;
     // Ensure all fields are properly set with correct types
     const newEvent: Event = {
@@ -98,7 +105,10 @@ export class MemStorage implements IStorage {
 
   async getEventsByNeighborhood(neighborhood: string): Promise<EventWithGenres[]> {
     return Array.from(this.events.values())
-      .filter(event => event.neighborhood?.toLowerCase() === neighborhood.toLowerCase())
+      .filter(event => 
+        event.venueName !== 'The Lucky Horseshoe' && 
+        event.neighborhood?.toLowerCase() === neighborhood.toLowerCase()
+      )
       .map(event => this.attachGenresToEvent(event))
       .sort((a, b) => a.date.getTime() - b.date.getTime());
   }
@@ -107,7 +117,8 @@ export class MemStorage implements IStorage {
     return Array.from(this.events.values())
       .filter(event => {
         const eventGenres = this.eventGenresMap.get(event.id) || [];
-        return eventGenres.some(g => g.toLowerCase() === genre.toLowerCase());
+        return event.venueName !== 'The Lucky Horseshoe' && 
+               eventGenres.some(g => g.toLowerCase() === genre.toLowerCase());
       })
       .map(event => this.attachGenresToEvent(event))
       .sort((a, b) => a.date.getTime() - b.date.getTime());
@@ -119,7 +130,8 @@ export class MemStorage implements IStorage {
     return Array.from(this.events.values())
       .filter(event => {
         const eventDate = new Date(event.date);
-        return eventDate >= startDate && eventDate <= end;
+        return event.venueName !== 'The Lucky Horseshoe' && 
+               eventDate >= startDate && eventDate <= end;
       })
       .map(event => this.attachGenresToEvent(event))
       .sort((a, b) => a.date.getTime() - b.date.getTime());
@@ -130,6 +142,9 @@ export class MemStorage implements IStorage {
     
     return Array.from(this.events.values())
       .filter(event => {
+        // Exclude Lucky Horseshoe events
+        if (event.venueName === 'The Lucky Horseshoe') return false;
+        
         // Search in title, venue, neighborhood, description
         return (
           event.title.toLowerCase().includes(lowerQuery) ||
