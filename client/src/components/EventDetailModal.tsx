@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useAttendEvent } from "@/hooks/use-events";
 import { EventWithGenres } from "@shared/schema";
-import { X, MapPin, Bookmark, Map, Users } from "lucide-react";
+import { X, MapPin, Bookmark, Users } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface EventDetailModalProps {
@@ -15,14 +15,18 @@ interface EventDetailModalProps {
   onClose: () => void;
 }
 
-export default function EventDetailModal({ event, isOpen, onClose }: EventDetailModalProps) {
+export default function EventDetailModal({
+  event,
+  isOpen,
+  onClose,
+}: EventDetailModalProps) {
   const { toast } = useToast();
   const attendEvent = useAttendEvent();
   const [isAttending, setIsAttending] = useState(false);
-  
+
   const handleAttend = async () => {
     if (isAttending) return;
-    
+
     try {
       await attendEvent.mutateAsync(event.id);
       setIsAttending(true);
@@ -38,17 +42,20 @@ export default function EventDetailModal({ event, isOpen, onClose }: EventDetail
       });
     }
   };
-  
+
   // Format the date from ISO to display format
   const eventDate = new Date(event.date);
   const formattedDate = format(eventDate, "EEEE, MMMM d, yyyy");
-  
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="p-0 sm:max-w-lg max-h-[90vh] overflow-y-auto">
         <div className="relative">
           <img
-            src={event.imageUrl || "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&h=400&q=80"}
+            src={
+              event.imageUrl ||
+              "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&h=400&q=80"
+            }
             alt={event.title}
             className="w-full object-cover h-64"
           />
@@ -63,17 +70,19 @@ export default function EventDetailModal({ event, isOpen, onClose }: EventDetail
           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4 text-white">
             <h2 className="text-2xl font-bold">{event.title}</h2>
             <p className="flex items-center text-sm">
-              <MapPin className="h-4 w-4 mr-1" /> {event.venueName}, {event.neighborhood}
+              <MapPin className="h-4 w-4 mr-1" /> {event.venueName},{" "}
+              {event.neighborhood}
             </p>
           </div>
         </div>
-        
+
         <div className="p-4">
           <div className="flex items-center justify-between mb-4 border-b border-gray-200 pb-4">
             <div>
               <p className="text-primary font-medium">{formattedDate}</p>
               <p className="text-slate-600">
-                {event.startTime}{event.endTime ? ` - ${event.endTime}` : ""}
+                {event.startTime}
+                {event.endTime ? ` - ${event.endTime}` : ""}
               </p>
             </div>
             <Button
@@ -81,30 +90,29 @@ export default function EventDetailModal({ event, isOpen, onClose }: EventDetail
               onClick={handleAttend}
               disabled={attendEvent.isPending || isAttending}
             >
-              <Bookmark className="h-4 w-4 mr-1" /> {isAttending ? "Saved" : "Save"}
+              <Bookmark className="h-4 w-4 mr-1" />{" "}
+              {isAttending ? "Saved" : "Save"}
             </Button>
           </div>
-          
+
           {event.description && (
             <div className="mb-4">
-              <h3 className="font-bold text-slate-800 text-lg mb-2">About this show</h3>
+              <h3 className="font-bold text-slate-800 text-lg mb-2">
+                About this show
+              </h3>
               <p className="text-slate-600 text-sm">{event.description}</p>
             </div>
           )}
-          
+
           <div className="mb-4">
-            <h3 className="font-bold text-slate-800 text-lg mb-2">Venue Information</h3>
+            <h3 className="font-bold text-slate-800 text-lg mb-2">
+              Venue Information
+            </h3>
             <p className="text-slate-600 text-sm mb-2 flex items-center">
               <MapPin className="h-4 w-4 mr-1" /> {event.venueAddress}
             </p>
-            <div className="bg-gray-100 rounded-md h-40 flex items-center justify-center text-slate-500">
-              <div className="text-center">
-                <Map className="h-8 w-8 mx-auto mb-2" />
-                <p>Interactive map will be displayed here</p>
-              </div>
-            </div>
           </div>
-          
+
           <div>
             <h3 className="font-bold text-slate-800 text-lg mb-2">Attendees</h3>
             <div className="flex -space-x-2 mb-2">
@@ -116,19 +124,23 @@ export default function EventDetailModal({ event, isOpen, onClose }: EventDetail
                   </AvatarFallback>
                 </Avatar>
               ))}
-              
+
               {/* If there are more than 4 attendees, show a count */}
               {(event.attendees || 0) > 4 && (
                 <div className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-gray-400 border-2 border-white">
-                  <span className="text-xs font-medium text-white">+{(event.attendees || 0) - 4}</span>
+                  <span className="text-xs font-medium text-white">
+                    +{(event.attendees || 0) - 4}
+                  </span>
                 </div>
               )}
             </div>
             <p className="text-slate-600 text-sm flex items-center">
-              <Users className="h-4 w-4 mr-1" /> {event.attendees || 0} {event.attendees === 1 ? "person is" : "people are"} attending this show
+              <Users className="h-4 w-4 mr-1" /> {event.attendees || 0}{" "}
+              {event.attendees === 1 ? "person is" : "people are"} attending
+              this show
             </p>
           </div>
-          
+
           <div className="mt-4 flex flex-wrap gap-1">
             {event.genres.map((genre) => (
               <Badge key={genre} variant="outline" className="bg-gray-100">
