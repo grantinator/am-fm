@@ -398,22 +398,5 @@
     "createdAt": "2025-04-07T21:02:10.420Z",
     "genres": ["Blues"],
     "id": 32
-  },
-  {
-    "title": "MAITA, Maggie Gently and Cilantro",
-    "date": "2025-04-07T00:00:00.000Z",
-    "startTime": "20:00",
-    "endTime": null,
-    "venueName": "Kilowatt",
-    "venueAddress": "3160 16th St, San Francisco, CA 94103",
-    "neighborhood": "Mission",
-    "description": null,
-    "price": 16,
-    "image": {},
-    "imageUrl": "/uploads/image-1744068603138-604146692.png",
-    "id": 33,
-    "attendees": 0,
-    "createdAt": "2025-04-07T23:30:03.590Z",
-    "genres": ["Rock", "Electronic"]
   }
 ]
