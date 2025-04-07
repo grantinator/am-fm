@@ -8,6 +8,13 @@ import { format } from "date-fns";
 export function useEvents() {
   return useQuery<EventWithGenres[]>({
     queryKey: ["/api/events"],
+    select: (events) => {
+      return events.sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        return dateA.getTime() - dateB.getTime();
+      });
+    }
   });
 }
 

@@ -81,20 +81,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log('Image URL set to:', eventData.imageUrl);
       }
       
-      // Ensure the date field is a proper Date object
-      if (eventData.date) {
-        // If it's a string, convert it to a Date
-        if (typeof eventData.date === 'string') {
-          const parsedDate = new Date(eventData.date);
-          if (isNaN(parsedDate.getTime())) {
-            console.error('Invalid date format:', eventData.date);
-            return res.status(400).json({ 
-              message: "Invalid date format", 
-              errors: { date: { _errors: ["Invalid date format"] } }
-            });
-          }
-          eventData.date = parsedDate;
-        } 
+      // Combine date and time into a single Date object
+      if (eventData.date && eventData.startTime) {
+        const dateStr = typeof eventData.date === 'string' ? eventData.date : eventData.date.toISOString().split('T')[0];
+        const [hours, minutes] = eventData.startTime.split(':');
+        
+        // Create date object combining the date and time
+        const combinedDate = new Date(dateStr);
+        combinedDate.setHours(parseInt(hours), parseInt(minutes));
+        
+        if (isNaN(combinedDate.getTime())) {
+          console.error('Invalid date/time format:', { date: eventData.date, time: eventData.startTime });
+          return res.status(400).json({ 
+            message: "Invalid date/time format", 
+            errors: { date: { _errors: ["Invalid date/time format"] } }
+          });
+        }
+        
+        eventData.date = combinedDate;
+      } 
         // If it's a date-like object from JSON, convert to proper Date
         else if (typeof eventData.date === 'object' && eventData.date !== null) {
           if ('toISOString' in eventData.date) {
