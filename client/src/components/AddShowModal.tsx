@@ -67,9 +67,17 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
   
   const onSubmit = async (data: EventFormData) => {
     try {
-      // Debug genres validation
-      console.log("Form data genres:", data.genres);
-      console.log("Selected genres state:", selectedGenres);
+      // Debug form validation
+      console.log("Form submission data:", {
+        ...data,
+        date: data.date?.toISOString(),
+        genres: data.genres || selectedGenres,
+        image: data.image ? data.image.name : null
+      });
+      
+      if (form.formState.errors) {
+        console.error("Validation errors:", form.formState.errors);
+      }
       
       // Check if genres are empty and manually set them if needed
       if (!data.genres || data.genres.length === 0) {
