@@ -50,7 +50,13 @@ export class MemStorage implements IStorage {
       
       // Initialize maps and counter from loaded events
       events.forEach(event => {
-        this.events.set(event.id, event);
+        // Convert date strings back to Date objects
+        const eventWithDate = {
+          ...event,
+          date: new Date(event.date),
+          createdAt: new Date(event.createdAt)
+        };
+        this.events.set(event.id, eventWithDate);
         this.eventGenresMap.set(event.id, event.genres);
       });
       
