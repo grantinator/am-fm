@@ -26,21 +26,51 @@ export interface IStorage {
   incrementAttendees(eventId: number): Promise<void>;
 }
 
+import fs from 'fs';
+import path from 'path';
+
 export class MemStorage implements IStorage {
   private users: Map<number, User>;
   private events: Map<number, Event>;
   private eventGenresMap: Map<number, string[]>;
   private userIdCounter: number;
   private eventIdCounter: number;
+  private eventsPath: string;
 
   constructor() {
     this.users = new Map();
     this.events = new Map();
     this.eventGenresMap = new Map();
     this.userIdCounter = 1;
-    this.eventIdCounter = 1;
+    this.eventsPath = path.join(process.cwd(), 'events.json');
     
-    // No mock events - we'll use only scraped events
+    // Load existing events from JSON file
+    try {
+      const data = fs.readFileSync(this.eventsPath, 'utf8');
+      const events: EventWithGenres[] = JSON.parse(data);
+      
+      // Initialize maps and counter from loaded events
+      events.forEach(event => {
+        this.events.set(event.id, event);
+        this.eventGenresMap.set(event.id, event.genres);
+      });
+      
+      this.eventIdCounter = Math.max(...events.map(e => e.id), 0) + 1;
+    } catch (error) {
+      this.eventIdCounter = 1;
+      // If file doesn't exist or is invalid, start fresh
+      this.saveEvents();
+    }
+  }
+
+  private saveEvents(): void {
+    const events = Array.from(this.events.values())
+      .map(event => ({
+        ...event,
+        genres: this.eventGenresMap.get(event.id) || []
+      }));
+    
+    fs.writeFileSync(this.eventsPath, JSON.stringify(events, null, 2));
   }
 
   async getUser(id: number): Promise<User | undefined> {
@@ -100,6 +130,7 @@ export class MemStorage implements IStorage {
     this.events.set(id, newEvent);
     this.eventGenresMap.set(id, genres);
     
+    this.saveEvents();
     return this.attachGenresToEvent(newEvent);
   }
 
@@ -162,6 +193,7 @@ export class MemStorage implements IStorage {
     if (event) {
       event.attendees = (event.attendees || 0) + 1;
       this.events.set(eventId, event);
+      this.saveEvents();
     }
   }
 
