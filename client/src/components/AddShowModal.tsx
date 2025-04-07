@@ -38,6 +38,7 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
       neighborhood: "",
       description: "",
       genres: [],
+      price: 0,
     },
   });
   
@@ -186,13 +187,12 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
             <Label htmlFor="neighborhood">Neighborhood</Label>
             <Select
               onValueChange={(value) => form.setValue("neighborhood", value)}
-              defaultValue={form.getValues("neighborhood")}
+              defaultValue={form.getValues("neighborhood") || undefined}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select neighborhood" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Select neighborhood</SelectItem>
                 {neighborhoods.map((neighborhood) => (
                   <SelectItem key={neighborhood} value={neighborhood}>
                     {neighborhood}
@@ -288,6 +288,23 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
             </div>
             {form.formState.errors.image && (
               <p className="text-sm text-red-500">{form.formState.errors.image.message}</p>
+            )}
+          </div>
+          
+          {/* Price */}
+          <div className="space-y-2">
+            <Label htmlFor="price">Ticket Price ($)</Label>
+            <Input
+              id="price"
+              type="number"
+              min="0"
+              placeholder="0 for free shows"
+              {...form.register("price", {
+                valueAsNumber: true,
+              })}
+            />
+            {form.formState.errors.price && (
+              <p className="text-sm text-red-500">{form.formState.errors.price.message}</p>
             )}
           </div>
           
