@@ -46,7 +46,7 @@ export default function EventCard({ event }: EventCardProps) {
   
   return (
     <>
-      <Card className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer w-full" onClick={handleCardClick}>
+      <Card className="card rounded-lg overflow-hidden cursor-pointer w-full" onClick={handleCardClick}>
         <div className="relative">
           <img 
             src={event.imageUrl || "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=333&q=80"} 
@@ -77,19 +77,19 @@ export default function EventCard({ event }: EventCardProps) {
               <p className="text-sm font-medium text-primary mb-1">
                 {format(new Date(event.date), "EEE, MMM d").toUpperCase()} • {event.startTime}
               </p>
-              <h3 className="font-bold text-slate-800 text-lg mb-1">{event.title}</h3>
-              <p className="text-slate-500 text-sm flex items-center">
+              <h3 className="event-title text-lg mb-1">{event.title}</h3>
+              <p className="event-subtitle text-sm flex items-center">
                 <MapPin className="h-4 w-4 mr-1 flex-shrink-0" /> {event.venueName}, {event.neighborhood}
               </p>
             </div>
           </div>
           <div className="mt-4 flex items-center justify-between">
-            <span className="text-slate-600 text-sm flex items-center">
+            <span className="event-detail text-sm flex items-center">
               <Users className="h-4 w-4 mr-1 flex-shrink-0" /> {event.attendees || 0} going
             </span>
             <div className="flex flex-wrap gap-1 justify-end">
               {event.genres.map((genre) => (
-                <Badge key={genre} variant="outline" className="bg-gray-100 text-slate-600 text-xs whitespace-nowrap">
+                <Badge key={genre} variant="outline" className="bg-purple-950/60 text-purple-300 border-purple-800/30 text-xs whitespace-nowrap">
                   {genre}
                 </Badge>
               ))}

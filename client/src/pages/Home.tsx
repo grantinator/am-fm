@@ -19,8 +19,8 @@ export default function Home() {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-12">
-        <h2 className="text-2xl font-bold text-red-500 mb-4">Error Loading Events</h2>
-        <p className="text-slate-600">There was a problem fetching events. Please try again later.</p>
+        <h2 className="text-2xl font-bold text-red-400 mb-4">Error Loading Events</h2>
+        <p className="text-white/70">There was a problem fetching events. Please try again later.</p>
       </div>
     );
   }

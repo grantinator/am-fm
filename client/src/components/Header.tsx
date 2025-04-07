@@ -17,12 +17,12 @@ export default function Header() {
 
   return (
     <>
-      <header className="bg-white shadow-md fixed w-full top-0 z-50">
+      <header className="header fixed w-full top-0 z-50">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <Link href="/">
             <div className="flex items-center space-x-2 cursor-pointer">
               <Music className="text-primary text-2xl" />
-              <h1 className="text-xl font-bold text-primary">SF Local Shows</h1>
+              <h1 className="text-xl font-bold gradient-text">SF Local Shows</h1>
             </div>
           </Link>
           <Button 

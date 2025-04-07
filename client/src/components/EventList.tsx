@@ -35,7 +35,7 @@ export default function EventList() {
     return (
       <div className="space-y-6 w-full">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="bg-white rounded-lg shadow-md overflow-hidden w-full">
+          <div key={i} className="card rounded-lg overflow-hidden w-full">
             <Skeleton className="w-full h-48" />
             <div className="p-4">
               <Skeleton className="h-6 w-3/4 mb-2" />
@@ -51,8 +51,8 @@ export default function EventList() {
   if (!allEvents || allEvents.length === 0) {
     return (
       <div className="text-center py-10">
-        <h3 className="text-xl font-bold text-slate-800 mb-2">No events found</h3>
-        <p className="text-slate-600">No upcoming shows found. Check back later!</p>
+        <h3 className="text-xl font-bold text-white mb-2">No events found</h3>
+        <p className="text-white/70">No upcoming shows found. Check back later!</p>
       </div>
     );
   }
@@ -61,7 +61,7 @@ export default function EventList() {
     <div className="space-y-8 w-full">
       {Object.entries(eventsByDate).map(([dateKey, dateEvents]) => (
         <div key={dateKey} className="space-y-4 w-full">
-          <h2 className="font-bold text-xl text-slate-800 border-b border-gray-200 pb-2 w-full">
+          <h2 className="date-header font-bold text-xl pb-2 w-full">
             {format(new Date(dateKey), 'MMMM d, yyyy')}
           </h2>
           
