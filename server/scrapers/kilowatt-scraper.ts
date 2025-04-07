@@ -1,9 +1,11 @@
 import axios from 'axios';
-import * as cheerio from 'cheerio';
 import { VenueScraper, ScraperResult } from './base-scraper';
 import { EventWithGenres } from '@shared/schema';
 
 export class KilowattScraper extends VenueScraper {
+  private readonly apiKey = 'cxapsVUwK54628CtqISh79lqEA7pdqEH6sJ6Lt5B';
+  private readonly partnerId = 'ff10e59d';
+
   constructor() {
     super(
       'Kilowatt Bar',
@@ -15,74 +17,125 @@ export class KilowattScraper extends VenueScraper {
 
   async scrape(): Promise<ScraperResult> {
     try {
-      const response = await axios.get(this.venueUrl);
-      const $ = cheerio.load(response.data);
+      // Use the DICE.fm API to fetch events for Kilowatt
+      const response = await axios.get('https://api.dice.fm/v1/events', {
+        params: {
+          venue: 'Kilowatt',
+          apiKey: this.apiKey,
+          partnerId: this.partnerId
+        }
+      });
+
+      if (!response.data || !response.data.data) {
+        return {
+          success: false,
+          events: [],
+          error: 'No data returned from DICE.fm API'
+        };
+      }
+
       const events: EventWithGenres[] = [];
       
-      // Find all event listings on the page
-      $('.entry-content .event').each((index, element) => {
-        const dateText = $(element).find('.date').text().trim();
-        const titleElement = $(element).find('.title');
-        const title = titleElement.text().trim();
-        const descriptionElements = $(element).find('p');
-        let description = '';
+      // Process each event from the API response
+      response.data.data.forEach((eventData: any, index: number) => {
+        if (!eventData) return;
         
-        // Skip the first p (usually the date/time info) and get the rest for description
-        if (descriptionElements.length > 1) {
-          descriptionElements.slice(1).each((i, el) => {
-            description += $(el).text().trim() + ' ';
+        // Extract and process necessary information
+        const title = eventData.name || 'Unknown Event';
+        const description = eventData.description || '';
+        
+        // Convert event date/time to a Date object
+        const eventDate = eventData.date ? new Date(eventData.date) : new Date();
+        
+        // Format the time for display
+        const startTime = eventDate.toLocaleTimeString('en-US', { 
+          hour: 'numeric', 
+          minute: '2-digit', 
+          hour12: true 
+        });
+        
+        // Try to extract end time if available
+        const endTime = eventData.endDate 
+          ? new Date(eventData.endDate).toLocaleTimeString('en-US', { 
+              hour: 'numeric', 
+              minute: '2-digit', 
+              hour12: true 
+            })
+          : '';
+        
+        // Extract price information
+        let price = 0; // Default to free
+        if (eventData.price && eventData.price.total) {
+          // Price might be in cents or with currency symbol
+          const priceValue = eventData.price.total;
+          if (typeof priceValue === 'number') {
+            price = priceValue;
+          } else if (typeof priceValue === 'string') {
+            // Remove currency symbol if present and convert to number
+            const cleanPrice = priceValue.replace(/[^0-9.]/g, '');
+            price = parseFloat(cleanPrice) || 0;
+          }
+        }
+        
+        // Get image URL
+        const imageUrl = eventData.image || eventData.coverImage || '';
+        
+        // Detect genres based on event tags or categories
+        const detectedGenres: string[] = [];
+        
+        if (eventData.tags && Array.isArray(eventData.tags)) {
+          const genreMap: Record<string, string> = {
+            'rock': 'Rock',
+            'indie': 'Indie',
+            'electronic': 'Electronic',
+            'house': 'Electronic',
+            'techno': 'Electronic',
+            'folk': 'Folk',
+            'acoustic': 'Acoustic',
+            'jazz': 'Jazz',
+            'blues': 'Blues',
+            'punk': 'Punk',
+            'hip-hop': 'Hip Hop',
+            'rap': 'Hip Hop',
+            'pop': 'Pop'
+          };
+          
+          // Map the event tags to our genres
+          eventData.tags.forEach((tag: string) => {
+            const lowerTag = tag.toLowerCase();
+            for (const [keyword, genre] of Object.entries(genreMap)) {
+              if (lowerTag.includes(keyword)) {
+                detectedGenres.push(genre);
+                break;
+              }
+            }
           });
         }
         
-        // Extract date parts
-        const dateMatch = dateText.match(/([A-Za-z]+) (\d+)(th|nd|rd|st)?,? (\d{4})?/);
-        if (!dateMatch) return; // Skip if date can't be parsed
-        
-        const month = dateMatch[1];
-        const day = dateMatch[2];
-        const year = dateMatch[4] || new Date().getFullYear().toString();
-        
-        // Extract time
-        const timeText = $(element).find('.date').text();
-        const timeMatch = timeText.match(/(\d+):?(\d+)? ?(am|pm|AM|PM)/);
-        let startTime = '';
-        
-        if (timeMatch) {
-          const hour = timeMatch[1];
-          const minute = timeMatch[2] || '00';
-          const ampm = timeMatch[3].toLowerCase();
-          startTime = `${hour}:${minute} ${ampm}`;
-        }
-        
-        // Try to extract price
-        const priceText = $(element).text();
-        const priceMatch = priceText.match(/\$(\d+)/);
-        const price = priceMatch ? priceMatch[1] : '';
-        
-        // Try to detect musical genre from description (simplified approach)
-        const genreKeywords: Record<string, string[]> = {
-          'Rock': ['rock', 'indie', 'alternative', 'punk', 'metal'],
-          'Electronic': ['electronic', 'techno', 'house', 'dj', 'edm', 'dance'],
-          'Folk': ['folk', 'acoustic', 'singer-songwriter'],
-          'Jazz': ['jazz', 'blues', 'soul'],
-          'Hip Hop': ['hip hop', 'hip-hop', 'rap', 'hiphop'],
-          'Other': []
-        };
-        
-        // Detect genres from description
-        const detectedGenres: string[] = [];
-        const descriptionLower = description.toLowerCase();
-        
-        for (const [genre, keywords] of Object.entries(genreKeywords)) {
-          for (const keyword of keywords) {
-            if (descriptionLower.includes(keyword) || title.toLowerCase().includes(keyword)) {
-              detectedGenres.push(genre);
-              break;
+        // If no genres were detected, try to infer from description/title
+        if (detectedGenres.length === 0) {
+          const genreKeywords: Record<string, string[]> = {
+            'Rock': ['rock', 'indie', 'alternative', 'punk', 'metal'],
+            'Electronic': ['electronic', 'techno', 'house', 'dj', 'edm', 'dance'],
+            'Folk': ['folk', 'acoustic', 'singer-songwriter'],
+            'Jazz': ['jazz', 'blues', 'soul'],
+            'Hip Hop': ['hip hop', 'hip-hop', 'rap', 'hiphop'],
+            'Pop': ['pop', 'synth']
+          };
+          
+          const textToSearch = (title + ' ' + description).toLowerCase();
+          
+          for (const [genre, keywords] of Object.entries(genreKeywords)) {
+            for (const keyword of keywords) {
+              if (textToSearch.includes(keyword)) {
+                detectedGenres.push(genre);
+                break;
+              }
             }
           }
         }
         
-        // If no genre detected, use "Other"
+        // If still no genres, use "Other"
         if (detectedGenres.length === 0) {
           detectedGenres.push('Other');
         }
@@ -91,28 +144,19 @@ export class KilowattScraper extends VenueScraper {
         const event: EventWithGenres = {
           id: index + 1000, // Temporary ID, will be replaced when saved to storage
           title,
-          description: description.trim(),
-          date: new Date(`${month} ${day}, ${year}`),
+          description,
+          date: eventDate,
           startTime,
-          endTime: '',
+          endTime,
           venueName: this.venueName,
           venueAddress: this.venueAddress,
           neighborhood: this.neighborhood,
-          price: price ? parseInt(price) : 0,
-          imageUrl: '',
+          price,
+          imageUrl,
           attendees: 0,
           createdAt: new Date(),
           genres: Array.from(new Set(detectedGenres)) // Remove duplicates
         };
-        
-        // Try to extract image URL if available
-        const imgElement = $(element).find('img');
-        if (imgElement.length > 0) {
-          const imgSrc = imgElement.attr('src');
-          if (imgSrc) {
-            event.imageUrl = imgSrc;
-          }
-        }
         
         events.push(event);
       });
