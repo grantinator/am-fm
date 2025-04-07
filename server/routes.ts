@@ -82,6 +82,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Validate event data
       const result = insertEventSchema.safeParse(eventData);
       if (!result.success) {
+        console.log('Validation errors:', JSON.stringify(result.error.format(), null, 2));
         return res.status(400).json({ 
           message: "Invalid event data", 
           errors: result.error.format() 
