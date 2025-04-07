@@ -70,7 +70,7 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
       // Debug form validation
       console.log("Form submission data:", {
         ...data,
-        date: data.date?.toISOString(),
+        date: data.date instanceof Date ? data.date.toISOString() : data.date,
         genres: data.genres || selectedGenres,
         image: data.image ? data.image.name : null
       });

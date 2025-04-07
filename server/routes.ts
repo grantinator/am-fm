@@ -76,7 +76,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Add imageUrl if an image was uploaded
       if (req.file) {
+        // Ensure the path starts with a leading slash
         eventData.imageUrl = `/uploads/${req.file.filename}`;
+        console.log('Image URL set to:', eventData.imageUrl);
       }
       
       // Ensure the date field is a proper Date object
