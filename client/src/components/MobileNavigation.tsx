@@ -29,7 +29,7 @@ export default function MobileNavigation() {
               fontFamily: "var(--font-body)"
             }}>
               <Home className="h-5 w-5" />
-              <span className="text-xs mt-1">Home</span>
+              <span className="text-xs mt-1" style={{ textTransform: 'lowercase' }}>home</span>
             </button>
           </Link>
           
@@ -44,7 +44,7 @@ export default function MobileNavigation() {
             }}>
               <PlusCircle className="h-5 w-5" />
             </div>
-            <span className="text-xs mt-6">Add Show</span>
+            <span className="text-xs mt-6" style={{ textTransform: 'lowercase' }}>add show</span>
           </button>
           
           <Link href="/events/1">
@@ -54,7 +54,7 @@ export default function MobileNavigation() {
               fontFamily: "var(--font-body)"
             }}>
               <Music className="h-5 w-5" />
-              <span className="text-xs mt-1">Featured</span>
+              <span className="text-xs mt-1" style={{ textTransform: 'lowercase' }}>featured</span>
             </button>
           </Link>
         </div>

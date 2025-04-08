@@ -1,20 +1,17 @@
-/* --- Google Font Import --- */
-/* Importing Work Sans (Regular 400, SemiBold 600) and Playfair Display (Bold 700) */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Work+Sans:wght@400;600&display=swap');
-
 /* --- Color Variables --- */
 :root {
-  --bg-color: #FAFAD2; /* Light Goldenrod Yellow */
-  --text-color: #333333; /* Dark Grey */
-  --primary-accent: #800020; /* Burgundy */
-  --secondary-bg: #FFFDF5; /* Old Lace/Cream */
-  --subtle-accent: #BDB76B; /* Muted Gold */
-  --link-color: #800020; /* Burgundy for links */
-  --link-hover-color: #6D071A; /* Darker Burgundy for hover */
+  --bg-color: #D8C374; /* Darker Goldenrod Yellow */
+  --text-color: #222222; /* Darker Grey */
+  --primary-accent: #5D0018; /* Darker Burgundy */
+  --secondary-bg: #E9D87C; /* Darker Yellow for Cards */
+  --subtle-accent: #888888; /* Grey Accent */
+  --link-color: #5D0018; /* Darker Burgundy for links */
+  --link-hover-color: #400010; /* Even Darker Burgundy for hover */
+  --shadow-color: rgba(100, 100, 100, 0.2); /* Grey shadow */
 
   /* --- Font Variables --- */
-  --font-body: 'Work Sans', sans-serif;
-  --font-header: 'Playfair Display', serif;
+  --font-body: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-header: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 /* --- Base Styles --- */
@@ -85,15 +82,16 @@ a:hover, a:focus {
 /* Event card styling */
 .card {
   background-color: var(--secondary-bg) !important;
-  border: 1px solid #e0e0e0 !important;
-  border-left: 4px solid var(--primary-accent) !important;
+  border: 1px solid var(--subtle-accent) !important;
+  border-left: 4px solid var(--subtle-accent) !important;
   transition: transform 0.2s ease-in-out;
   margin-bottom: 1rem;
+  box-shadow: 0 2px 4px var(--shadow-color) !important;
 }
 
 .card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px var(--shadow-color) !important;
 }
 
 .event-title {

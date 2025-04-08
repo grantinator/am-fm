@@ -29,7 +29,7 @@ export default function Header() {
                 fontFamily: 'var(--font-header)',
                 color: 'var(--secondary-bg)',
                 letterSpacing: '1px',
-                textTransform: 'uppercase'
+                textTransform: 'lowercase'
               }}>poopee</h1>
             </div>
           </Link>
@@ -45,7 +45,7 @@ export default function Header() {
             }}
           >
             <PlusCircle className="h-4 w-4 mr-2" />
-            <span className="hidden md:inline">Add Show</span>
+            <span className="hidden md:inline" style={{ textTransform: 'lowercase' }}>add show</span>
           </Button>
         </div>
       </header>
