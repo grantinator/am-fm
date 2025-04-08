@@ -22,7 +22,7 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex flex-col min-h-screen bg-[#120017]">
+      <div className="flex flex-col min-h-screen" style={{ backgroundColor: '#120017' }}>
         <Header />
         <main className="flex-grow container mx-auto px-4 pt-0 pb-20 md:pb-8">
           <Router />

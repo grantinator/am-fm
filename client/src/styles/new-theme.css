@@ -99,35 +99,36 @@ a:hover {
 
 /* --- Add Show Button --- */
 .add-show-btn {
-  background-color: transparent;
-  color: #ffe89e;
-  border: 1px solid #ffe89e;
-  border-radius: 0.25rem;
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0.5rem 1.25rem;
-  transition: all 0.2s ease;
+  background-color: transparent !important;
+  color: #ffe89e !important;
+  border: 1px solid #ffe89e !important;
+  border-radius: 0.25rem !important;
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 0.5rem 1.25rem !important;
+  transition: all 0.2s ease !important;
 }
 
 .add-show-btn:hover {
-  color: #ff6a00;
-  border-color: #ff6a00;
-  transform: scale(1.01);
+  background-color: transparent !important;
+  color: #ff6a00 !important;
+  border-color: #ff6a00 !important;
+  transform: scale(1.01) !important;
 }
 
 /* --- Mobile Navigation --- */
 .mobile-nav {
-  background-color: #120017;
-  border-top: 1px dashed #ffe89e;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 9999;
-  width: 100%;
-  padding: 12px 0;
+  background-color: #120017 !important;
+  border-top: 1px dashed #ffe89e !important;
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 9999 !important;
+  width: 100% !important;
+  padding: 12px 0 !important;
 }
 
 .mobile-nav a {
@@ -254,45 +255,4 @@ form button[type="submit"]:hover {
   font-size: 0.8rem;
   font-weight: 600;
   margin-right: 0.5rem;
-}
-
-/* Essential resets and defaults */
-html, body, #root {
-  background-color: #120017;
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
-}
-
-button, .button {
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.25rem;
-  background-color: transparent;
-  color: #ffe89e;
-  border: 1px solid #ffe89e;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-button:hover, .button:hover {
-  color: #ff6a00;
-  border-color: #ff6a00;
-  transform: scale(1.01);
-}
-
-p {
-  margin-bottom: 1em;
-  font-size: 1rem;
-}
-
-strong, b {
-  font-weight: 700;
 }

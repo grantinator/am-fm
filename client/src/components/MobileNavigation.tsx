@@ -18,15 +18,14 @@ export default function MobileNavigation() {
   return (
     <>
       <nav className="fixed bottom-0 left-0 right-0 mobile-nav md:hidden z-40" style={{
-        backgroundColor: "var(--primary-accent)",
-        borderTop: "2px solid var(--subtle-accent)"
+        backgroundColor: "#120017",
+        borderTop: "1px dashed #ffe89e"
       }}>
         <div className="flex justify-around">
           <Link href="/">
             <button className="flex flex-col items-center py-3 px-4" style={{
-              color: location === "/" ? "var(--secondary-bg)" : "var(--secondary-bg, #FFFDF5)",
-              opacity: location === "/" ? 1 : 0.7,
-              fontFamily: "var(--font-body)"
+              color: location === "/" ? "#ff6a00" : "#ffe89e",
+              fontFamily: "Inter, sans-serif"
             }}>
               <Home className="h-5 w-5" />
               <span className="text-xs mt-1">Home</span>
@@ -36,11 +35,11 @@ export default function MobileNavigation() {
           <button 
             onClick={openModal}
             className="flex flex-col items-center py-3 px-4 relative"
-            style={{ color: "var(--secondary-bg)", fontFamily: "var(--font-body)" }}
+            style={{ color: "#ffe89e", fontFamily: "Inter, sans-serif" }}
           >
-            <div className="absolute -top-5 rounded-full p-2" style={{
-              backgroundColor: "var(--subtle-accent)",
-              color: "var(--text-color)"
+            <div className="absolute -top-5 border border-[#ffe89e] rounded-sm p-2" style={{
+              backgroundColor: "transparent",
+              color: "#ffe89e"
             }}>
               <PlusCircle className="h-5 w-5" />
             </div>
@@ -49,9 +48,8 @@ export default function MobileNavigation() {
           
           <Link href="/events/1">
             <button className="flex flex-col items-center py-3 px-4" style={{
-              color: location.startsWith("/events/") ? "var(--secondary-bg)" : "var(--secondary-bg, #FFFDF5)",
-              opacity: location.startsWith("/events/") ? 1 : 0.7,
-              fontFamily: "var(--font-body)"
+              color: location.startsWith("/events/") ? "#ff6a00" : "#ffe89e",
+              fontFamily: "Inter, sans-serif"
             }}>
               <Music className="h-5 w-5" />
               <span className="text-xs mt-1">Featured</span>

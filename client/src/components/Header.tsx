@@ -17,32 +17,46 @@ export default function Header() {
 
   return (
     <>
-      <header className="fixed w-full top-0 z-50 shadow-md">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+      <header className="relative w-full z-50 text-center py-8">
+        <div className="container mx-auto px-4 flex justify-between items-center">
+          <div className="flex-1">
+            {/* Placeholder for the moon icon from the design */}
+            <span className="text-[#ffe89e] text-3xl">☾</span>
+          </div>
           <Link href="/">
             <div className="flex items-center space-x-3 cursor-pointer">
-              <Music className="h-7 w-7" style={{ color: 'var(--primary-accent)' }} />
-              <h1 className="text-2xl font-bold" style={{ 
-                fontFamily: 'var(--font-header)',
-                color: 'var(--text-color)',
-                letterSpacing: '-0.01em'
+              {/* Star icon from the design */}
+              <span className="text-[#ffe89e] text-xl">★</span>
+              <h1 className="text-4xl font-bold" style={{ 
+                fontFamily: 'Playfair Display, serif',
+                color: '#ffe89e',
+                letterSpacing: '0.03em',
+                textTransform: 'lowercase'
               }}>poopee</h1>
             </div>
           </Link>
-          <Button
-            onClick={openModal}
-            className="add-show-btn rounded-full shadow-md"
-            style={{
-              padding: "0.5rem 1.25rem",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem"
-            }}
-          >
-            <PlusCircle className="h-5 w-5" />
-            <span className="hidden md:inline">Add Show</span>
-          </Button>
+          <div className="flex-1 flex justify-end">
+            <Button
+              onClick={openModal}
+              className="add-show-btn"
+              style={{
+                padding: "0.5rem 1.25rem",
+                backgroundColor: 'transparent',
+                color: '#ffe89e',
+                borderColor: '#ffe89e',
+                fontFamily: 'Inter, sans-serif',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                fontWeight: 600,
+                border: '1px solid #ffe89e',
+                borderRadius: '0.25rem'
+              }}
+            >
+              ADD SHOW
+            </Button>
+          </div>
         </div>
+        <div className="w-full border-b border-dashed border-[#ffe89e] mt-4"></div>
       </header>
 
       <AddShowModal isOpen={isModalOpen} onClose={closeModal} />

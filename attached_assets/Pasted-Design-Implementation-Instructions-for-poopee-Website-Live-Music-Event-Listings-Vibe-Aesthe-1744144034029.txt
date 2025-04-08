@@ -1,0 +1,123 @@
+Design Implementation Instructions for "poopee" Website (Live Music Event Listings)
+
+✨ Vibe & Aesthetic Overview
+The site should look like a gritty, underground events listing page with artistic edge and clarity. Inspiration is taken from The Laundromat SF and Bar Part Time, but tailored for a rock-forward vibe. Here's the breakdown:
+
+🎨 Color Palette
+Background: Very dark purple (#0d001a or #120017) — nearly black but with a subtle warmth.
+
+Primary Text Color: Muted yellow-cream (#ffe89e or #f5e3b3) — not neon, but clearly visible.
+
+Accent Elements: Slightly desaturated red or orange accents for hover states or buttons (#ff6a00 or #f24d38).
+
+🖋️ Typography
+Header Font: Grungy or distressed serif, ideally something with rock poster energy. If custom font isn’t available, use:
+
+Playfair Display, Libre Baskerville, or IM Fell English SC as a base.
+
+Body Font: Simple sans-serif like Inter, Space Grotesk, or Montserrat for readability.
+
+Font Styling:
+
+All lowercase branding (“poopee”) in header.
+
+Generous letter spacing (letter-spacing: 0.05em) on all caps elements like dates.
+
+🧱 Layout & Structure
+Page Structure:
+
+A scrollable single column feed grouped by date.
+
+Each section should start with a date heading (e.g., "April 8, 2025") followed by event cards.
+
+Event Cards:
+
+Cards include:
+
+Event title
+
+Artists
+
+Time
+
+RSVP count
+
+Poster (provided by user uploads — don't apply styles here)
+
+Clean, responsive layout. Maintain 1–2 column layout on large screens and stack on mobile.
+
+🎨 Decorative Details
+Header section should include small, edgy line-drawings:
+
+Crescent moon, sparkles/stars, skull, flame, etc.
+
+These should be subtle and not folk-ish — keep them sketchy or rough.
+
+Doodles should appear around the site header only (avoid cluttering event cards).
+
+Use wavy or dashed dividers between date sections for a handmade feel.
+
+🖥️ CSS Suggestions
+css
+Copy
+Edit
+body {
+  background-color: #120017;
+  color: #ffe89e;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  font-family: 'Playfair Display', serif;
+  text-transform: lowercase;
+  letter-spacing: 0.03em;
+  color: #ffe89e;
+}
+
+a {
+  color: #ffe89e;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #ff6a00;
+}
+
+.header {
+  position: relative;
+  padding: 2rem;
+  font-size: 2.5rem;
+  text-align: center;
+  border-bottom: 1px dashed #ffe89e;
+  background: url('/assets/doodles/moon.svg') no-repeat top left,
+             url('/assets/doodles/skull.svg') no-repeat top right;
+  background-size: 80px;
+}
+
+.date-group {
+  border-top: 1px dashed #ffe89e;
+  padding-top: 1.5rem;
+  margin-top: 2rem;
+}
+
+.event-card {
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid #2b1b35;
+  border-radius: 0.5rem;
+  transition: transform 0.2s ease;
+}
+
+.event-card:hover {
+  transform: scale(1.01);
+  border-color: #ff6a00;
+}
+✅ Constraints to Remember
+Artwork for each event is uploaded by the bands — do not apply filters or overlays on these images.
+
+Maintain accessibility: ensure color contrast, support screen readers with semantic tags.
+
+Keep mobile-first responsiveness in mind: test on narrow screens.
+
