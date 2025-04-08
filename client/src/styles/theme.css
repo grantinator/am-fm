@@ -1,64 +1,126 @@
-/* --- Google Font Import --- */
-/* Importing Work Sans (Regular 400, SemiBold 600) and Playfair Display (Bold 700) */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Work+Sans:wght@400;600&display=swap');
-
 /* --- Color Variables --- */
 :root {
-  --bg-color: #FAFAD2; /* Light Goldenrod Yellow */
+  --bg-color: #FFF8E7; /* Light Yellow Background (as specified) */
   --text-color: #333333; /* Dark Grey */
-  --primary-accent: #800020; /* Burgundy */
-  --secondary-bg: #FFFDF5; /* Old Lace/Cream */
-  --subtle-accent: #BDB76B; /* Muted Gold */
-  --link-color: #800020; /* Burgundy for links */
-  --link-hover-color: #6D071A; /* Darker Burgundy for hover */
-
+  --primary-accent: #8C4A4A; /* Burgundy (as specified) */
+  --secondary-bg: #FFFFFF; /* Pure White for cards/elements */
+  --subtle-accent: #E4D7C7; /* Lighter complementary color */
+  --link-color: #8C4A4A; /* Burgundy for links */
+  --link-hover-color: #6A3535; /* Darker Burgundy for hover */
+  --error-color: #b91c1c; /* Red for errors */
+  
   /* --- Font Variables --- */
-  --font-body: 'Work Sans', sans-serif;
-  --font-header: 'Playfair Display', serif;
+  --font-body: Arial, sans-serif;
+  --font-header: Arial, sans-serif;
+  
+  /* --- Buffy-inspired styling variables --- */
+  --card-border-radius: 16px;
+  --button-border-radius: 30px; 
+  --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  --transition-speed: 0.3s ease;
 }
 
 /* --- Base Styles --- */
 html, body, #root {
   background-color: var(--bg-color);
-  min-height: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
 body {
   background-color: var(--bg-color);
   color: var(--text-color);
-  font-family: var(--font-body); /* Use Work Sans for body */
-  font-weight: 400; /* Regular weight */
+  font-family: var(--font-body);
+  font-weight: 400;
   line-height: 1.6;
-  margin: 0; /* Good practice to reset margin */
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* --- Typography --- */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-header); /* Use Playfair Display for headers */
-  font-weight: 700; /* Bold weight */
+  font-family: var(--font-header);
+  font-weight: 700;
   color: var(--primary-accent);
-  margin-top: 1.5em;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-top: 0;
   margin-bottom: 0.5em;
+}
+
+h1 {
+  font-size: 2.5rem;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+h3 {
+  font-size: 1.5rem;
 }
 
 p {
   margin-bottom: 1em;
+  font-size: 1rem;
 }
 
 strong, b {
-    font-weight: 600; /* Use SemiBold for emphasis within body text */
+  font-weight: 700;
 }
 
 /* --- Links & Buttons --- */
 a {
   color: var(--link-color);
-  text-decoration: underline; /* Underline helps identify links */
-  font-weight: 600; /* Make links slightly bolder */
+  text-decoration: none;
+  font-weight: 600;
+  transition: all var(--transition-speed);
+  position: relative;
 }
 
 a:hover, a:focus {
   color: var(--link-hover-color);
-  text-decoration: none; /* Optional: remove underline on hover */
+}
+
+button, .button {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--button-border-radius);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-speed);
+  box-shadow: var(--box-shadow);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button.primary, .button.primary {
+  background-color: var(--primary-accent);
+  color: var(--secondary-bg);
+}
+
+button.primary:hover, .button.primary:hover {
+  background-color: var(--link-hover-color);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+button.secondary, .button.secondary {
+  background-color: var(--bg-color);
+  color: var(--primary-accent);
+  border: 1px solid var(--primary-accent);
+}
+
+button.secondary:hover, .button.secondary:hover {
+  background-color: var(--subtle-accent);
+  transform: translateY(-2px);
 }
 
 /* --- poopee specific styles --- */
@@ -66,92 +128,135 @@ a:hover, a:focus {
 /* Header styling */
 .header, header {
   background-color: var(--primary-accent) !important;
-  border-bottom: 3px solid var(--subtle-accent) !important;
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
   right: 0 !important;
   z-index: 9999 !important;
   width: 100% !important;
-  padding: 8px 0 !important;
+  padding: 16px 0 !important;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08) !important;
 }
 
 .header h1 {
   color: var(--secondary-bg);
   margin: 0;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 /* Event card styling */
 .card {
   background-color: var(--secondary-bg) !important;
-  border: 1px solid #e0e0e0 !important;
-  border-left: 4px solid var(--primary-accent) !important;
-  transition: transform 0.2s ease-in-out;
-  margin-bottom: 1rem;
+  border: none !important;
+  border-radius: var(--card-border-radius) !important;
+  box-shadow: var(--box-shadow) !important;
+  transition: all var(--transition-speed) !important;
+  margin-bottom: 1.5rem !important;
+  overflow: hidden !important;
 }
 
 .card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px) !important;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
 }
 
 .event-title {
   font-family: var(--font-header);
   color: var(--primary-accent);
   font-weight: 700;
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
 }
 
 .event-subtitle {
   color: var(--text-color);
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
 }
 
 .event-detail {
-  color: var(--subtle-accent);
+  color: var(--text-color);
   font-weight: 600;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 /* Date header styling */
 .date-header {
   font-family: var(--font-header);
   color: var(--primary-accent);
-  border-bottom: 2px solid var(--subtle-accent);
-  padding-bottom: 0.5rem;
+  font-size: 1.2rem;
+  letter-spacing: -0.01em;
+  font-weight: 700;
+  border-bottom: 1px solid var(--subtle-accent);
+  padding-bottom: 0.75rem;
+  margin-top: 2rem;
+  margin-bottom: 1.25rem;
 }
 
 /* Mobile navigation styling */
 .mobile-nav {
-  background-color: var(--primary-accent) !important;
-  border-top: 2px solid var(--subtle-accent) !important;
+  background-color: var(--secondary-bg) !important;
+  border-top: 1px solid var(--subtle-accent) !important;
   position: fixed !important;
   bottom: 0 !important;
   left: 0 !important;
   right: 0 !important;
   z-index: 9999 !important;
   width: 100% !important;
+  padding: 12px 0 !important;
+  box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.06) !important;
+}
+
+.mobile-nav a {
+  color: var(--text-color);
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.mobile-nav a.active {
+  color: var(--primary-accent);
 }
 
 /* Add Show button styling */
 .add-show-btn {
-  background-color: var(--primary-accent);
-  color: var(--secondary-bg);
-  border: 2px solid var(--subtle-accent);
-  font-family: var(--font-body);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  background-color: var(--secondary-bg) !important;
+  color: var(--primary-accent) !important;
+  border: none !important;
+  border-radius: var(--button-border-radius) !important;
+  font-family: var(--font-body) !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  box-shadow: var(--box-shadow) !important;
+  padding: 0.5rem 1.25rem !important;
+  transition: all var(--transition-speed) !important;
 }
 
 .add-show-btn:hover {
-  background-color: var(--link-hover-color);
+  background-color: var(--subtle-accent) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12) !important;
 }
 
 /* Form styling */
 form label {
   display: block;
-  margin-bottom: 0.5em;
+  margin-bottom: 0.75rem;
   font-weight: 600;
   color: var(--primary-accent);
+  font-size: 0.9rem;
+  letter-spacing: 0.01em;
 }
 
 form input[type="text"],
@@ -163,31 +268,68 @@ form textarea,
 form select {
   display: block;
   width: 100%;
-  padding: 0.75em;
-  margin-bottom: 1em;
-  border: 1px solid #ccc;
-  border-radius: 3px;
+  padding: 0.9rem 1rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--subtle-accent);
+  border-radius: 12px;
   font-family: var(--font-body);
-  font-size: 1em;
-  box-sizing: border-box;
+  font-size: 1rem;
   background-color: var(--secondary-bg);
+  transition: all var(--transition-speed);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+
+form input:focus,
+form textarea:focus,
+form select:focus {
+  outline: none;
+  border-color: var(--primary-accent);
+  box-shadow: 0 0 0 2px rgba(140, 74, 74, 0.1);
 }
 
 form textarea {
-  min-height: 100px;
+  min-height: 120px;
+  resize: vertical;
 }
 
 form button[type="submit"] {
-  margin-top: 1em;
+  margin-top: 1.5rem;
   background-color: var(--primary-accent);
   color: var(--secondary-bg);
+  border-radius: var(--button-border-radius);
+  border: none;
+  padding: 0.9rem 2rem;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all var(--transition-speed);
+  box-shadow: var(--box-shadow);
+}
+
+form button[type="submit"]:hover {
+  background-color: var(--link-hover-color);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
 }
 
 /* Badge styling */
 .badge-custom {
   background-color: var(--subtle-accent);
-  color: var(--text-color);
+  color: var(--primary-accent);
   font-family: var(--font-body);
   font-weight: 600;
+  font-size: 0.7rem;
   border: none;
+  border-radius: 20px;
+  padding: 0.3rem 0.6rem;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  text-transform: uppercase;
+  transition: all var(--transition-speed);
+}
+
+.badge-custom:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
