@@ -4,7 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 
 import Header from "@/components/Header";
-import MobileNavigation from "@/components/MobileNavigation";
+// MobileNavigation removed as requested
 import Home from "@/pages/Home";
 import EventDetail from "@/pages/EventDetail";
 import NotFound from "@/pages/not-found";
@@ -24,10 +24,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <div className="flex flex-col min-h-screen" style={{ backgroundColor: '#120017' }}>
         <Header />
-        <main className="flex-grow container mx-auto px-4 pt-0 pb-20 md:pb-8">
+        <main className="flex-grow container mx-auto px-4 pt-0 pb-8">
           <Router />
         </main>
-        <MobileNavigation />
         <Toaster />
       </div>
     </QueryClientProvider>

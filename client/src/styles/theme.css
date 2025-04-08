@@ -32,6 +32,7 @@ a:hover {
   font-size: 2.5rem;
   text-align: left;
   border-bottom: 1px solid #ffe89e;
+  margin-bottom: 1rem;
 }
 
 .header h1 {
@@ -116,31 +117,11 @@ a:hover {
   transform: scale(1.01);
 }
 
-/* --- Mobile Navigation --- */
-.mobile-nav {
-  background-color: #120017;
-  border-top: 1px solid #ffe89e;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 9999;
-  width: 100%;
-  padding: 12px 0;
-}
-
-.mobile-nav a {
-  color: #ffe89e;
-  font-size: 0.8rem;
-  font-weight: 600;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.mobile-nav a.active {
-  color: #ff6a00;
+/* Mobile styles */
+@media (max-width: 768px) {
+  main {
+    padding-bottom: 2rem !important;
+  }
 }
 
 /* --- Form Styling --- */

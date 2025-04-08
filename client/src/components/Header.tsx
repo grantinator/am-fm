@@ -53,7 +53,7 @@ export default function Header() {
             </Button>
           </div>
         </div>
-        <div className="w-full border-b border-[#ffe89e] mt-4"></div>
+
       </header>
 
       <AddShowModal isOpen={isModalOpen} onClose={closeModal} />
