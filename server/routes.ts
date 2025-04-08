@@ -1,5 +1,5 @@
 
-import type { Express, Request, Response } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertEventSchema, eventFormSchema } from "@shared/schema";
@@ -8,10 +8,15 @@ import path from "path";
 import fs from "fs";
 import { z } from "zod";
 
+// Define custom request type that includes file property
+interface MulterRequest extends Request {
+  file?: Express.Multer.File;
+}
+
 // Configure multer for file uploads
 const upload = multer({
   storage: multer.diskStorage({
-    destination: (req, file, cb) => {
+    destination: (req: Express.Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
       const uploadsDir = path.join(process.cwd(), "dist/public/uploads");
       // Create uploads directory if it doesn't exist
       if (!fs.existsSync(uploadsDir)) {
@@ -19,7 +24,7 @@ const upload = multer({
       }
       cb(null, uploadsDir);
     },
-    filename: (req, file, cb) => {
+    filename: (req: Express.Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
       // Create unique filename with original extension
       const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
       const ext = path.extname(file.originalname);
@@ -29,7 +34,7 @@ const upload = multer({
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB max file size
   },
-  fileFilter: (req, file, cb) => {
+  fileFilter: (req: Express.Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
     // Accept only image files
     if (file.mimetype.startsWith("image/")) {
       cb(null, true);
@@ -70,7 +75,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Create new event with image upload
-  app.post("/api/events", upload.single("image"), async (req, res) => {
+  app.post("/api/events", upload.single("image"), async (req: MulterRequest, res) => {
     try {
       // Parse event data from form
       const eventData = JSON.parse(req.body.eventData);

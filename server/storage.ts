@@ -6,7 +6,7 @@ import {
   type InsertUser, 
   type EventWithGenres 
 } from "@shared/schema";
-import { Database } from "@replit/database";
+import Database from "@replit/database";
 
 const db = new Database();
 const EVENTS_KEY = "events";
@@ -21,13 +21,14 @@ export interface IStorage {
   getEventsByNeighborhood(neighborhood: string): Promise<EventWithGenres[]>;
   getEventsByGenre(genre: string): Promise<EventWithGenres[]>;
   getEventsByDate(startDate: Date, endDate?: Date): Promise<EventWithGenres[]>;
+  searchEvents(query: string): Promise<EventWithGenres[]>;
   incrementAttendees(eventId: number): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<number, User>;
   private userIdCounter: number;
-  private eventIdCounter: number;
+  private eventIdCounter: number = 1;
 
   constructor() {
     this.users = new Map();
@@ -41,16 +42,34 @@ export class MemStorage implements IStorage {
   }
 
   private async getEventsFromDb(): Promise<EventWithGenres[]> {
-    const events = await db.get(EVENTS_KEY) || [];
-    return events.map(event => ({
-      ...event,
-      date: new Date(event.date),
-      createdAt: new Date(event.createdAt)
-    }));
+    try {
+      const result = await db.get(EVENTS_KEY);
+      const events = result || [];
+      
+      if (!Array.isArray(events)) {
+        console.error("Invalid events data in database:", events);
+        return [];
+      }
+      
+      return events.map((event: any) => ({
+        ...event,
+        date: new Date(event.date),
+        createdAt: new Date(event.createdAt)
+      }));
+    } catch (error) {
+      console.error("Error retrieving events from database:", error);
+      return [];
+    }
   }
 
   private async saveEventsToDb(events: EventWithGenres[]) {
-    await db.set(EVENTS_KEY, events);
+    try {
+      await db.set(EVENTS_KEY, events);
+      console.log(`Saved ${events.length} events to database`);
+    } catch (error) {
+      console.error("Error saving events to database:", error);
+      throw new Error("Failed to save events to database");
+    }
   }
 
   async getUser(id: number): Promise<User | undefined> {
@@ -125,6 +144,21 @@ export class MemStorage implements IStorage {
         return eventDate >= startDate && eventDate <= end;
       })
       .sort((a, b) => a.date.getTime() - b.date.getTime());
+  }
+
+  async searchEvents(query: string): Promise<EventWithGenres[]> {
+    const events = await this.getEventsFromDb();
+    const lowercaseQuery = query.toLowerCase();
+    
+    return events.filter(event => {
+      return (
+        event.title?.toLowerCase().includes(lowercaseQuery) ||
+        event.description?.toLowerCase().includes(lowercaseQuery) ||
+        event.venueName?.toLowerCase().includes(lowercaseQuery) ||
+        event.neighborhood?.toLowerCase().includes(lowercaseQuery) ||
+        event.genres.some(genre => genre.toLowerCase().includes(lowercaseQuery))
+      );
+    }).sort((a, b) => a.date.getTime() - b.date.getTime());
   }
 
   async incrementAttendees(eventId: number): Promise<void> {
