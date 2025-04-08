@@ -98,9 +98,9 @@ export default function EventCard({ event }: EventCardProps) {
               {event.attendees || 0} going
             </span>
             <div className="flex flex-wrap gap-1.5 justify-end">
-              {event.genres.map((genre) => (
+              {event.genres.map((genre, index) => (
                 <Badge
-                  key={genre}
+                  key={`${event.id}-${genre}-${index}`}
                   variant="outline"
                   className="badge-custom"
                 >
