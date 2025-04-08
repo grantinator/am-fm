@@ -1,12 +1,12 @@
 /* --- Color Variables --- */
 :root {
-  --bg-color: #2B2B2B; /* Dark Charcoal Background */
+  --bg-color: #4B3A4B; /* Dark Greyish Plum Background */
   --text-color: #E0E0E0; /* Light Grey text */
   --secondary-text: #A0A0A0; /* Medium Grey text */
   --primary-accent: #A96C6C; /* Lighter Dusty Rose/Muted Wine */
   --secondary-accent: #C8A96A; /* Muted Gold / Soft Ochre */
-  --secondary-bg: #333333; /* Slightly lighter than background for cards */
-  --subtle-accent: #444444; /* Subtle accent for borders etc. */
+  --secondary-bg: #5C4A5C; /* Slightly lighter than background for cards */
+  --subtle-accent: #6E5C6E; /* Subtle accent for borders etc. */
   --link-color: #C8A96A; /* Muted Gold for links */
   --link-hover-color: #DBC08A; /* Lighter gold for hover */
   --error-color: #E57373; /* Softer red for errors */
