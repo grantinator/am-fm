@@ -1,25 +1,27 @@
 /* --- Color Variables --- */
 :root {
-  --bg-color: #4B3A4B; /* Dark Greyish Plum Background */
-  --text-color: #E0E0E0; /* Light Grey text */
-  --secondary-text: #A0A0A0; /* Medium Grey text */
-  --primary-accent: #A96C6C; /* Lighter Dusty Rose/Muted Wine */
-  --secondary-accent: #C8A96A; /* Muted Gold / Soft Ochre */
-  --secondary-bg: #5C4A5C; /* Slightly lighter than background for cards */
-  --subtle-accent: #6E5C6E; /* Subtle accent for borders etc. */
-  --link-color: #C8A96A; /* Muted Gold for links */
-  --link-hover-color: #DBC08A; /* Lighter gold for hover */
+  --bg-color: #120017; /* Dark Purple Background */
+  --text-color: #ffe89e; /* Golden Yellow text */
+  --secondary-text: #a0a0a0; /* Medium Grey text */
+  --primary-accent: #ffe89e; /* Golden Yellow accent */
+  --secondary-accent: #ff6a00; /* Orange accent for hover */
+  --secondary-bg: rgba(255, 255, 255, 0.02); /* Slightly lighter than background for cards */
+  --subtle-accent: #2b1b35; /* Subtle accent for borders etc. */
+  --link-color: #ffe89e; /* Golden Yellow for links */
+  --link-hover-color: #ff6a00; /* Orange for hover */
   --error-color: #E57373; /* Softer red for errors */
   
   /* --- Font Variables --- */
-  --font-body: Arial, sans-serif;
-  --font-header: Arial, sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-header: 'Playfair Display', serif;
   
-  /* --- Buffy-inspired styling variables --- */
-  --card-border-radius: 16px;
-  --button-border-radius: 30px; 
-  --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-  --transition-speed: 0.3s ease;
+  /* --- Styling variables --- */
+  --card-border-radius: 0.5rem;
+  --button-border-radius: 0.25rem; 
+  --box-shadow: none;
+  --transition-speed: 0.2s ease;
+  --border-style: 1px solid #2b1b35;
+  --dashed-border: 1px dashed #ffe89e;
 }
 
 /* --- Base Styles --- */
@@ -46,7 +48,8 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-header);
   font-weight: 700;
   color: var(--primary-accent);
-  letter-spacing: -0.02em;
+  text-transform: lowercase;
+  letter-spacing: 0.03em;
   line-height: 1.2;
   margin-top: 0;
   margin-bottom: 0.5em;
@@ -129,41 +132,39 @@ button.secondary:hover, .button.secondary:hover {
 
 /* Header styling */
 .header, header {
-  background-color: var(--secondary-bg) !important;
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
+  position: relative !important;
+  padding: 2rem !important;
+  font-size: 2.5rem !important;
+  text-align: center !important;
+  border-bottom: var(--dashed-border) !important;
+  background-color: transparent !important;
   z-index: 9999 !important;
   width: 100% !important;
-  padding: 16px 0 !important;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2) !important;
-  border-bottom: 1px solid var(--subtle-accent) !important;
 }
 
 .header h1 {
   color: var(--primary-accent);
   margin: 0;
-  font-size: 1.6rem;
+  font-size: 2.5rem;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.03em;
+  text-transform: lowercase;
 }
 
 /* Event card styling */
-.card {
-  background-color: var(--secondary-bg) !important;
-  border: none !important;
-  border-radius: var(--card-border-radius) !important;
-  box-shadow: var(--box-shadow) !important;
-  transition: all var(--transition-speed) !important;
-  margin-bottom: 1.5rem !important;
+.card, .event-card {
+  margin: 1rem 0 !important;
+  padding: 1rem !important;
+  background-color: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid #2b1b35 !important;
+  border-radius: 0.5rem !important;
+  transition: transform 0.2s ease !important;
   overflow: hidden !important;
 }
 
-.card:hover {
-  transform: translateY(-4px) !important;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3) !important;
-  border: 1px solid var(--subtle-accent) !important;
+.card:hover, .event-card:hover {
+  transform: scale(1.01) !important;
+  border-color: var(--link-hover-color) !important;
 }
 
 .event-title {
@@ -192,14 +193,15 @@ button.secondary:hover, .button.secondary:hover {
 }
 
 /* Date header styling */
-.date-header {
+.date-header, .date-group {
   font-family: var(--font-header);
   color: var(--primary-accent);
   font-size: 1.2rem;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.03em;
   font-weight: 700;
-  border-bottom: 1px solid var(--subtle-accent);
-  padding-bottom: 0.75rem;
+  text-transform: lowercase;
+  border-top: var(--dashed-border);
+  padding-top: 1.5rem;
   margin-top: 2rem;
   margin-bottom: 1.25rem;
 }

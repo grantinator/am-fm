@@ -1,3 +1,6 @@
+/* Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap');
+
 /* Import our custom theme styles */
 @import './styles/theme.css';
 
@@ -11,7 +14,7 @@
   }
   
   html, body, #root {
-    background-color: #4B3A4B !important;
+    background-color: #120017 !important;
     min-height: 100vh;
   }
 }

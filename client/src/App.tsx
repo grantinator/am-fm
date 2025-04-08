@@ -22,9 +22,9 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex flex-col min-h-screen bg-[#4B3A4B]">
+      <div className="flex flex-col min-h-screen bg-[#120017]">
         <Header />
-        <main className="flex-grow container mx-auto px-4 pt-20 pb-20 md:pt-24 md:pb-8">
+        <main className="flex-grow container mx-auto px-4 pt-0 pb-20 md:pb-8">
           <Router />
         </main>
         <MobileNavigation />
