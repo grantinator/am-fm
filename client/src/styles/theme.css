@@ -30,8 +30,8 @@ a:hover {
   position: relative;
   padding: 2rem;
   font-size: 2.5rem;
-  text-align: center;
-  border-bottom: 1px dashed #ffe89e;
+  text-align: left;
+  border-bottom: 1px solid #ffe89e;
 }
 
 .header h1 {
@@ -45,7 +45,7 @@ a:hover {
 
 /* --- Date Groups --- */
 .date-group, .date-header {
-  border-top: 1px dashed #ffe89e;
+  border-top: 1px solid #ffe89e;
   padding-top: 1.5rem;
   margin-top: 2rem;
   font-family: 'Playfair Display', serif;
@@ -78,7 +78,6 @@ a:hover {
   font-size: 1.3rem;
   margin-bottom: 0.5rem;
   line-height: 1.2;
-  text-transform: lowercase;
 }
 
 .event-subtitle {
@@ -120,7 +119,7 @@ a:hover {
 /* --- Mobile Navigation --- */
 .mobile-nav {
   background-color: #120017;
-  border-top: 1px dashed #ffe89e;
+  border-top: 1px solid #ffe89e;
   position: fixed;
   bottom: 0;
   left: 0;

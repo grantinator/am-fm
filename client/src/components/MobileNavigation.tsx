@@ -19,7 +19,7 @@ export default function MobileNavigation() {
     <>
       <nav className="fixed bottom-0 left-0 right-0 mobile-nav md:hidden z-40" style={{
         backgroundColor: "#120017",
-        borderTop: "1px dashed #ffe89e"
+        borderTop: "1px solid #ffe89e"
       }}>
         <div className="flex justify-around">
           <Link href="/">
@@ -37,7 +37,7 @@ export default function MobileNavigation() {
             className="flex flex-col items-center py-3 px-4 relative"
             style={{ color: "#ffe89e", fontFamily: "Inter, sans-serif" }}
           >
-            <div className="absolute -top-5 border border-[#ffe89e] rounded-sm p-2" style={{
+            <div className="absolute -top-5 border border-solid border-[#ffe89e] rounded-sm p-2" style={{
               backgroundColor: "transparent",
               color: "#ffe89e"
             }}>

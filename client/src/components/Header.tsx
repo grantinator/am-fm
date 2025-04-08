@@ -17,15 +17,12 @@ export default function Header() {
 
   return (
     <>
-      <header className="relative w-full z-50 text-center py-8">
+      <header className="relative w-full z-50 py-8">
         <div className="container mx-auto px-4 flex justify-between items-center">
-          <div className="flex-1">
-            {/* Placeholder for the moon icon from the design */}
-            <span className="text-[#ffe89e] text-3xl">☾</span>
-          </div>
           <Link href="/">
             <div className="flex items-center space-x-3 cursor-pointer">
-              {/* Star icon from the design */}
+              {/* Moon and star icons from the design, now grouped with text */}
+              <span className="text-[#ffe89e] text-3xl">☾</span>
               <span className="text-[#ffe89e] text-xl">★</span>
               <h1 className="text-4xl font-bold" style={{ 
                 fontFamily: 'Playfair Display, serif',
@@ -35,7 +32,7 @@ export default function Header() {
               }}>poopee</h1>
             </div>
           </Link>
-          <div className="flex-1 flex justify-end">
+          <div className="flex justify-end">
             <Button
               onClick={openModal}
               className="add-show-btn"
@@ -56,7 +53,7 @@ export default function Header() {
             </Button>
           </div>
         </div>
-        <div className="w-full border-b border-dashed border-[#ffe89e] mt-4"></div>
+        <div className="w-full border-b border-[#ffe89e] mt-4"></div>
       </header>
 
       <AddShowModal isOpen={isModalOpen} onClose={closeModal} />
