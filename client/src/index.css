@@ -1,13 +1,18 @@
+/* Import our custom theme styles */
+@import './styles/theme.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Import our custom theme styles */
-@import './styles/theme.css';
-
 @layer base {
   * {
     @apply border-border;
+  }
+  
+  html, body, #root {
+    background-color: #FAFAD2 !important;
+    min-height: 100vh;
   }
 }
 
