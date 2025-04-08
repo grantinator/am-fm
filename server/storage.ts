@@ -44,18 +44,36 @@ export class MemStorage implements IStorage {
   private async getEventsFromDb(): Promise<EventWithGenres[]> {
     try {
       const result = await db.get(EVENTS_KEY);
-      const events = result || [];
+      console.log('Raw result from database:', result);
       
-      if (!Array.isArray(events)) {
-        console.error("Invalid events data in database:", events);
+      if (!result) {
         return [];
       }
       
-      return events.map((event: any) => ({
-        ...event,
-        date: new Date(event.date),
-        createdAt: new Date(event.createdAt)
-      }));
+      // Check if the result is already an array
+      if (Array.isArray(result)) {
+        return result.map((event: any) => ({
+          ...event,
+          date: new Date(event.date),
+          createdAt: new Date(event.createdAt),
+          // Ensure genres is always an array
+          genres: Array.isArray(event.genres) ? event.genres : []
+        }));
+      }
+      
+      // If it's not an array, it might be an object with a "value" property (Replit DB format)
+      if (result.value && Array.isArray(result.value)) {
+        return result.value.map((event: any) => ({
+          ...event,
+          date: new Date(event.date),
+          createdAt: new Date(event.createdAt),
+          // Ensure genres is always an array
+          genres: Array.isArray(event.genres) ? event.genres : []
+        }));
+      }
+      
+      console.error("Invalid events data in database:", result);
+      return [];
     } catch (error) {
       console.error("Error retrieving events from database:", error);
       return [];
@@ -64,7 +82,15 @@ export class MemStorage implements IStorage {
 
   private async saveEventsToDb(events: EventWithGenres[]) {
     try {
-      await db.set(EVENTS_KEY, events);
+      // Prepare events for storage - convert Date objects to strings
+      const eventsForStorage = events.map(event => ({
+        ...event,
+        date: event.date instanceof Date ? event.date.toISOString() : event.date,
+        createdAt: event.createdAt instanceof Date ? event.createdAt.toISOString() : event.createdAt,
+      }));
+      
+      // Set the events in the database
+      await db.set(EVENTS_KEY, eventsForStorage);
       console.log(`Saved ${events.length} events to database`);
     } catch (error) {
       console.error("Error saving events to database:", error);

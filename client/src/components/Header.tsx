@@ -22,7 +22,7 @@ export default function Header() {
           <Link href="/">
             <div className="flex items-center space-x-2 cursor-pointer">
               <Music className="text-primary h-6 w-6" />
-              <h1 className="text-xl font-bold gradient-text">SF Local Shows</h1>
+              <h1 className="text-xl font-bold gradient-text">poopee</h1>
             </div>
           </Link>
           <Button
