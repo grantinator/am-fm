@@ -11,9 +11,8 @@
   }
   
   html, body, #root {
-    background-color: #D8C374 !important;
+    background-color: #FAFAD2 !important;
     min-height: 100vh;
-    text-transform: lowercase;
   }
 }
 
@@ -32,7 +31,7 @@
     color: var(--secondary-bg);
     font-family: var(--font-body);
     font-weight: 600;
-    text-transform: lowercase;
+    text-transform: uppercase;
     letter-spacing: 0.5px;
     transition: background-color 0.2s ease;
   }
