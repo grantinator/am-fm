@@ -1,13 +1,15 @@
 /* --- Color Variables --- */
 :root {
-  --bg-color: #FFF8E7; /* Light Yellow Background (as specified) */
-  --text-color: #333333; /* Dark Grey */
-  --primary-accent: #8C4A4A; /* Burgundy (as specified) */
-  --secondary-bg: #FFFFFF; /* Pure White for cards/elements */
-  --subtle-accent: #E4D7C7; /* Lighter complementary color */
-  --link-color: #8C4A4A; /* Burgundy for links */
-  --link-hover-color: #6A3535; /* Darker Burgundy for hover */
-  --error-color: #b91c1c; /* Red for errors */
+  --bg-color: #2B2B2B; /* Dark Charcoal Background */
+  --text-color: #E0E0E0; /* Light Grey text */
+  --secondary-text: #A0A0A0; /* Medium Grey text */
+  --primary-accent: #A96C6C; /* Lighter Dusty Rose/Muted Wine */
+  --secondary-accent: #C8A96A; /* Muted Gold / Soft Ochre */
+  --secondary-bg: #333333; /* Slightly lighter than background for cards */
+  --subtle-accent: #444444; /* Subtle accent for borders etc. */
+  --link-color: #C8A96A; /* Muted Gold for links */
+  --link-hover-color: #DBC08A; /* Lighter gold for hover */
+  --error-color: #E57373; /* Softer red for errors */
   
   /* --- Font Variables --- */
   --font-body: Arial, sans-serif;
@@ -16,7 +18,7 @@
   /* --- Buffy-inspired styling variables --- */
   --card-border-radius: 16px;
   --button-border-radius: 30px; 
-  --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
   --transition-speed: 0.3s ease;
 }
 
@@ -127,7 +129,7 @@ button.secondary:hover, .button.secondary:hover {
 
 /* Header styling */
 .header, header {
-  background-color: var(--primary-accent) !important;
+  background-color: var(--secondary-bg) !important;
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
@@ -135,11 +137,12 @@ button.secondary:hover, .button.secondary:hover {
   z-index: 9999 !important;
   width: 100% !important;
   padding: 16px 0 !important;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2) !important;
+  border-bottom: 1px solid var(--subtle-accent) !important;
 }
 
 .header h1 {
-  color: var(--secondary-bg);
+  color: var(--primary-accent);
   margin: 0;
   font-size: 1.6rem;
   font-weight: 700;
@@ -159,7 +162,8 @@ button.secondary:hover, .button.secondary:hover {
 
 .card:hover {
   transform: translateY(-4px) !important;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid var(--subtle-accent) !important;
 }
 
 .event-title {
@@ -211,7 +215,7 @@ button.secondary:hover, .button.secondary:hover {
   z-index: 9999 !important;
   width: 100% !important;
   padding: 12px 0 !important;
-  box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.2) !important;
 }
 
 .mobile-nav a {
@@ -230,8 +234,8 @@ button.secondary:hover, .button.secondary:hover {
 
 /* Add Show button styling */
 .add-show-btn {
-  background-color: var(--secondary-bg) !important;
-  color: var(--primary-accent) !important;
+  background-color: var(--secondary-accent) !important;
+  color: var(--bg-color) !important;
   border: none !important;
   border-radius: var(--button-border-radius) !important;
   font-family: var(--font-body) !important;
@@ -244,9 +248,9 @@ button.secondary:hover, .button.secondary:hover {
 }
 
 .add-show-btn:hover {
-  background-color: var(--subtle-accent) !important;
+  background-color: var(--link-hover-color) !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2) !important;
 }
 
 /* Form styling */
@@ -315,21 +319,22 @@ form button[type="submit"]:hover {
 
 /* Badge styling */
 .badge-custom {
-  background-color: var(--subtle-accent);
-  color: var(--primary-accent);
+  background-color: var(--secondary-accent);
+  color: var(--bg-color);
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 0.7rem;
   border: none;
   border-radius: 20px;
-  padding: 0.3rem 0.6rem;
+  padding: 0.3rem 0.8rem;
   letter-spacing: 0.02em;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   text-transform: uppercase;
   transition: all var(--transition-speed);
 }
 
 .badge-custom:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  opacity: 0.9;
 }

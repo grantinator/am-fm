@@ -21,10 +21,10 @@ export default function Header() {
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <Link href="/">
             <div className="flex items-center space-x-3 cursor-pointer">
-              <Music className="h-7 w-7" style={{ color: 'var(--secondary-bg)' }} />
+              <Music className="h-7 w-7" style={{ color: 'var(--primary-accent)' }} />
               <h1 className="text-2xl font-bold" style={{ 
                 fontFamily: 'var(--font-header)',
-                color: 'var(--secondary-bg)',
+                color: 'var(--text-color)',
                 letterSpacing: '-0.01em'
               }}>poopee</h1>
             </div>
