@@ -22,10 +22,6 @@
   --transition-speed: 0.2s ease;
   --border-style: 1px solid #2b1b35;
   --dashed-border: 1px dashed #ffe89e;
-  
-  /* Hand-drawn effect variables */
-  --hand-drawn-color: #ffe89e;
-  --hand-drawn-line-height: 3px;
 }
 
 /* --- Base Styles --- */
@@ -140,40 +136,10 @@ button.secondary:hover, .button.secondary:hover {
   padding: 2rem !important;
   font-size: 2.5rem !important;
   text-align: center !important;
+  border-bottom: var(--dashed-border) !important;
   background-color: transparent !important;
   z-index: 9999 !important;
   width: 100% !important;
-  border-bottom: none !important;
-}
-
-/* Hand-drawn border effect */
-.header:after {
-  content: "";
-  display: block;
-  height: var(--hand-drawn-line-height);
-  width: 100%;
-  background-color: var(--hand-drawn-color);
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  
-  /* Create wavy border effect */
-  mask-image: linear-gradient(45deg, 
-    transparent 0%, transparent 5%, 
-    black 5%, black 95%, 
-    transparent 95%, transparent 100%
-  ), 
-  linear-gradient(-45deg, 
-    transparent 0%, transparent 5%, 
-    black 5%, black 95%, 
-    transparent 95%, transparent 100%
-  );
-  mask-size: 8px 8px;
-  mask-position: 0 0, 4px 0;
-  mask-repeat: repeat;
-  
-  /* Add slight wobble */
-  transform: translateY(1px) rotate(-0.1deg);
 }
 
 .header h1 {
@@ -190,41 +156,15 @@ button.secondary:hover, .button.secondary:hover {
   margin: 1rem 0 !important;
   padding: 1rem !important;
   background-color: rgba(255, 255, 255, 0.02) !important;
-  border: none !important;
+  border: 1px solid #2b1b35 !important;
   border-radius: 0.5rem !important;
   transition: transform 0.2s ease !important;
   overflow: hidden !important;
-  position: relative !important;
-}
-
-/* Hand-drawn card border effect */
-.card:before, .event-card:before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border: 2px solid #2b1b35;
-  border-radius: 0.6rem;
-  pointer-events: none;
-  transition: all var(--transition-speed);
-  
-  /* Add slight wobble to make it look hand-drawn */
-  transform: rotate(-0.2deg);
-  mask-image: linear-gradient(45deg, 
-    black 90%, transparent 92%, black 94%, transparent 96%, black 98%
-  );
-  mask-repeat: no-repeat;
 }
 
 .card:hover, .event-card:hover {
   transform: scale(1.01) !important;
-}
-
-.card:hover:before, .event-card:hover:before {
   border-color: var(--link-hover-color) !important;
-  transform: rotate(0.1deg) !important;
 }
 
 .event-title {
@@ -260,36 +200,10 @@ button.secondary:hover, .button.secondary:hover {
   letter-spacing: 0.03em;
   font-weight: 700;
   text-transform: lowercase;
-  border-top: none;
+  border-top: var(--dashed-border);
   padding-top: 1.5rem;
   margin-top: 2rem;
   margin-bottom: 1.25rem;
-  position: relative;
-}
-
-/* Hand-drawn border effect for date headers */
-.date-header:before, .date-group:before {
-  content: "";
-  display: block;
-  height: var(--hand-drawn-line-height);
-  width: 100%;
-  background-color: var(--hand-drawn-color);
-  position: absolute;
-  top: 0;
-  left: 0;
-  
-  /* Create different wavy border effect */
-  mask-image: linear-gradient(90deg, 
-    transparent 0%, black 5%, 
-    black 45%, transparent 50%,
-    transparent 50%, black 55%,
-    black 95%, transparent 100%
-  );
-  mask-size: 40px 8px;
-  mask-repeat: repeat-x;
-  
-  /* Add slight wobble */
-  transform: translateY(-1px) rotate(0.2deg);
 }
 
 /* Mobile navigation styling */
@@ -322,45 +236,23 @@ button.secondary:hover, .button.secondary:hover {
 
 /* Add Show button styling */
 .add-show-btn {
-  background-color: transparent !important;
-  color: var(--hand-drawn-color) !important;
+  background-color: var(--secondary-accent) !important;
+  color: var(--bg-color) !important;
+  border: none !important;
+  border-radius: var(--button-border-radius) !important;
   font-family: var(--font-body) !important;
   font-weight: 600 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.5px !important;
+  box-shadow: var(--box-shadow) !important;
   padding: 0.5rem 1.25rem !important;
   transition: all var(--transition-speed) !important;
-  position: relative !important;
-  border: 2px solid var(--hand-drawn-color) !important;
-  border-radius: 0 !important;
-  transform: rotate(-0.5deg) !important;
-}
-
-/* Hand-drawn button effect */
-.add-show-btn:before {
-  content: "";
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  border: 2px solid var(--hand-drawn-color);
-  pointer-events: none;
-  z-index: -1;
-  transform: rotate(1deg);
-  opacity: 0.5;
 }
 
 .add-show-btn:hover {
-  background-color: rgba(255, 232, 158, 0.1) !important;
-  transform: translateY(-2px) rotate(-0.3deg) !important;
-  color: var(--link-hover-color) !important;
-  border-color: var(--link-hover-color) !important;
-}
-
-.add-show-btn:hover:before {
-  border-color: var(--link-hover-color) !important;
-  transform: rotate(0.8deg) !important;
+  background-color: var(--link-hover-color) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2) !important;
 }
 
 /* Form styling */
