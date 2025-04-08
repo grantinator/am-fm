@@ -32,22 +32,24 @@ export default function EventCard({ event }: EventCardProps) {
   // Format event date for display
   const formattedDate = formatEventDate(event.date);
 
-  // Get label color based on date
-  const getLabelColor = () => {
+  // Get label for date badges based on our theme
+  const getDateLabelStyle = () => {
+    const baseStyle = "absolute top-3 left-3 text-sm font-bold px-2 py-1 rounded-md";
+    
     if (formattedDate === "TODAY") {
-      return "bg-primary";
+      return `${baseStyle} bg-[var(--primary-accent)] text-[var(--secondary-bg)]`;
     } else if (formattedDate === "TOMORROW") {
-      return "bg-teal-500";
+      return `${baseStyle} bg-[var(--subtle-accent)] text-[var(--text-color)]`;
     } else if (formattedDate === "THIS WEEKEND") {
-      return "bg-blue-500";
+      return `${baseStyle} bg-[var(--primary-accent)] text-[var(--secondary-bg)]`;
     }
-    return "bg-gray-500";
+    return `${baseStyle} bg-[var(--subtle-accent)] text-[var(--text-color)]`;
   };
 
   return (
     <>
       <Card
-        className="card rounded-lg overflow-hidden cursor-pointer w-full"
+        className="card rounded-lg overflow-hidden cursor-pointer w-full shadow-md"
         onClick={handleCardClick}
       >
         <div className="relative">
@@ -60,20 +62,18 @@ export default function EventCard({ event }: EventCardProps) {
             className="w-full h-48 sm:h-52 object-cover"
           />
           {formattedDate && (
-            <div
-              className={`absolute top-3 left-3 ${getLabelColor()} text-white text-sm font-bold px-2 py-1 rounded-md`}
-            >
+            <div className={getDateLabelStyle()}>
               {formattedDate}
             </div>
           )}
           <Button
             variant="ghost"
             size="icon"
-            className="absolute top-3 right-3 bg-white bg-opacity-70 hover:bg-opacity-100 text-slate-700 hover:text-pink-500 rounded-full w-8 h-8"
+            className="absolute top-3 right-3 bg-[var(--secondary-bg)] hover:bg-[var(--bg-color)] text-[var(--primary-accent)] hover:text-[var(--link-hover-color)] rounded-full w-8 h-8"
             onClick={handleLikeClick}
           >
             {isLiked ? (
-              <Heart className="h-5 w-5 fill-pink-500 text-pink-500" />
+              <Heart className="h-5 w-5 fill-[var(--primary-accent)] text-[var(--primary-accent)]" />
             ) : (
               <Heart className="h-5 w-5" />
             )}
@@ -82,20 +82,20 @@ export default function EventCard({ event }: EventCardProps) {
         <div className="p-4">
           <div className="flex items-start justify-between">
             <div className="w-full">
-              <p className="text-sm font-medium text-primary mb-1">
+              <p className="text-sm font-medium mb-1" style={{ color: "var(--primary-accent)" }}>
                 {format(new Date(event.date), "EEE, MMM d").toUpperCase()} •{" "}
                 {event.startTime}
               </p>
               <h3 className="event-title text-lg mb-1">{event.title}</h3>
               <p className="event-subtitle text-sm flex items-center">
-                <MapPin className="h-4 w-4 mr-1 flex-shrink-0" />{" "}
+                <MapPin className="h-4 w-4 mr-1 flex-shrink-0" style={{ color: "var(--primary-accent)" }} />{" "}
                 {event.venueName}, {event.neighborhood}
               </p>
             </div>
           </div>
           <div className="mt-4 flex items-center justify-between">
             <span className="event-detail text-sm flex items-center">
-              <Users className="h-4 w-4 mr-1 flex-shrink-0" />{" "}
+              <Users className="h-4 w-4 mr-1 flex-shrink-0" style={{ color: "var(--subtle-accent)" }} />{" "}
               {event.attendees || 0} going
             </span>
             <div className="flex flex-wrap gap-1 justify-end">
@@ -103,7 +103,12 @@ export default function EventCard({ event }: EventCardProps) {
                 <Badge
                   key={genre}
                   variant="outline"
-                  className="bg-purple-950/60 text-purple-300 border-purple-800/30 text-xs whitespace-nowrap"
+                  className="badge-custom text-xs whitespace-nowrap"
+                  style={{
+                    backgroundColor: "var(--subtle-accent)",
+                    color: "var(--text-color)",
+                    border: "none"
+                  }}
                 >
                   {genre}
                 </Badge>

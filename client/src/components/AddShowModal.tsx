@@ -169,8 +169,8 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-slate-800">Add a Local Show</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-xl font-bold" style={{ fontFamily: "var(--font-header)", color: "var(--primary-accent)" }}>Add a Local Show</DialogTitle>
+          <DialogDescription style={{ color: "var(--text-color)", fontFamily: "var(--font-body)" }}>
             Share details about an upcoming local concert
           </DialogDescription>
         </DialogHeader>
@@ -178,11 +178,12 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           {/* Show Name */}
           <div className="space-y-2">
-            <Label htmlFor="title">Show Name/Title *</Label>
+            <Label htmlFor="title" style={{ color: "var(--primary-accent)", fontFamily: "var(--font-body)", fontWeight: 600 }}>Show Name/Title *</Label>
             <Input
               id="title"
               placeholder="e.g. The Midnight Drifters w/ Ghost Notes"
               {...form.register("title")}
+              style={{ borderColor: "var(--subtle-accent)", background: "var(--secondary-bg)" }}
             />
             {form.formState.errors.title && (
               <p className="text-sm text-red-500">{form.formState.errors.title.message}</p>
@@ -292,7 +293,12 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
           <div className="space-y-2">
             <Label>Event Photo/Poster *</Label>
             <div 
-              className="border-2 border-dashed border-gray-300 rounded-md px-6 py-8 text-center"
+              className="border-2 border-dashed rounded-md px-6 py-8 text-center"
+              style={{ 
+                borderColor: "var(--subtle-accent)", 
+                backgroundColor: "var(--secondary-bg)",
+                cursor: "pointer"
+              }}
               onClick={() => document.getElementById("event-image")?.click()}
             >
               {imagePreview ? (
@@ -319,10 +325,10 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
               ) : (
                 <>
                   <div className="mb-3">
-                    <Image className="mx-auto h-12 w-12 text-gray-400" />
+                    <Image className="mx-auto h-12 w-12" style={{ color: "var(--primary-accent)" }} />
                   </div>
-                  <p className="text-gray-500 text-sm mb-2">Drag and drop an image here, or click to browse</p>
-                  <p className="text-gray-400 text-xs">Recommended size: 800x600px. Max file size: 5MB</p>
+                  <p className="text-sm mb-2" style={{ color: "var(--text-color)" }}>Drag and drop an image here, or click to browse</p>
+                  <p className="text-xs" style={{ color: "var(--subtle-accent)" }}>Recommended size: 800x600px. Max file size: 5MB</p>
                 </>
               )}
               <input
@@ -337,6 +343,11 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
                   type="button"
                   variant="outline"
                   className="mt-3"
+                  style={{
+                    borderColor: "var(--primary-accent)",
+                    color: "var(--primary-accent)",
+                    backgroundColor: "var(--secondary-bg)",
+                  }}
                   onClick={(e) => {
                     e.stopPropagation();
                     document.getElementById("event-image")?.click();
@@ -383,7 +394,15 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
           {/* Submit Button */}
           <Button
             type="submit"
-            className="w-full bg-primary hover:bg-primary/90 text-white"
+            className="w-full"
+            style={{
+              backgroundColor: "var(--primary-accent)",
+              color: "var(--secondary-bg)",
+              fontFamily: "var(--font-body)",
+              fontWeight: 600,
+              textTransform: "uppercase",
+              letterSpacing: "0.5px"
+            }}
             disabled={createEvent.isPending}
           >
             {createEvent.isPending ? "Posting..." : "Post Show"}

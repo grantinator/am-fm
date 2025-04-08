@@ -36,12 +36,15 @@ export default function EventList() {
     return (
       <div className="space-y-6 w-full">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="card rounded-lg overflow-hidden w-full">
-            <Skeleton className="w-full h-48" />
+          <div key={i} className="card rounded-lg overflow-hidden w-full" style={{ 
+            backgroundColor: "var(--secondary-bg)",
+            borderLeft: "4px solid var(--primary-accent)"
+          }}>
+            <Skeleton className="w-full h-48" style={{ backgroundColor: "var(--subtle-accent)", opacity: 0.2 }} />
             <div className="p-4">
-              <Skeleton className="h-6 w-3/4 mb-2" />
-              <Skeleton className="h-4 w-2/3 mb-1" />
-              <Skeleton className="h-4 w-1/2" />
+              <Skeleton className="h-6 w-3/4 mb-2" style={{ backgroundColor: "var(--subtle-accent)", opacity: 0.3 }} />
+              <Skeleton className="h-4 w-2/3 mb-1" style={{ backgroundColor: "var(--subtle-accent)", opacity: 0.2 }} />
+              <Skeleton className="h-4 w-1/2" style={{ backgroundColor: "var(--subtle-accent)", opacity: 0.2 }} />
             </div>
           </div>
         ))}
@@ -52,8 +55,8 @@ export default function EventList() {
   if (!allEvents || allEvents.length === 0) {
     return (
       <div className="text-center py-10">
-        <h3 className="text-xl font-bold text-white mb-2">No events found</h3>
-        <p className="text-white/70">No upcoming shows found. Check back later!</p>
+        <h3 className="text-xl font-bold mb-2" style={{ color: "var(--primary-accent)" }}>No events found</h3>
+        <p style={{ color: "var(--text-color)" }}>No upcoming shows found. Check back later!</p>
       </div>
     );
   }
@@ -62,7 +65,13 @@ export default function EventList() {
     <div className="space-y-8 w-full">
       {Object.entries(eventsByDate).map(([dateKey, dateEvents]) => (
         <div key={dateKey} className="space-y-4 w-full">
-          <h2 className="date-header font-bold text-xl pb-2 w-full">
+          <h2 className="date-header font-bold text-xl pb-2 w-full" style={{ 
+            fontFamily: "var(--font-header)", 
+            color: "var(--primary-accent)",
+            borderBottom: "2px solid var(--subtle-accent)",
+            textTransform: "uppercase",
+            letterSpacing: "1px"
+          }}>
             {/* Use the date from the first event in the group */}
             {format(new Date(dateEvents[0].date), 'MMMM d, yyyy')}
           </h2>

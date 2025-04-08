@@ -2,48 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import our custom theme styles */
+@import './styles/theme.css';
+
 @layer base {
   * {
     @apply border-border;
   }
+}
 
-  body {
-    @apply font-sans antialiased bg-background text-foreground;
+/* Override Tailwind with our custom theme */
+@layer components {
+  /* Use the theme variables for styling components */
+  .gradient-text {
+    color: var(--primary-accent);
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
   }
   
-  /* Custom dark theme overrides */
-  :root {
-    --background: 260 30% 12%;
-    --card-background: 260 30% 15%;
-    --header-background: 260 30% 10%;
+  /* Add Tailwind-compatible button styling */
+  .btn-primary {
+    @apply px-4 py-2 rounded;
+    background-color: var(--primary-accent);
+    color: var(--secondary-bg);
+    font-family: var(--font-body);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: background-color 0.2s ease;
   }
-}
-
-/* Custom component styles */
-.card {
-  @apply bg-[hsl(var(--card-background))] shadow-lg shadow-purple-900/20 border-purple-900/30;
-}
-
-.header {
-  @apply bg-[hsl(var(--header-background))] shadow-md shadow-purple-900/40 border-b border-purple-900/30;
-}
-
-.date-header {
-  @apply text-white/90 border-b border-purple-800/40;
-}
-
-.event-title {
-  @apply text-white font-bold;
-}
-
-.event-subtitle {
-  @apply text-white/80;
-}
-
-.event-detail {
-  @apply text-white/70;
-}
-
-.gradient-text {
-  @apply bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent;
+  
+  .btn-primary:hover {
+    background-color: var(--link-hover-color);
+  }
 }
