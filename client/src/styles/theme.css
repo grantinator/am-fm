@@ -112,15 +112,35 @@ a:hover {
 }
 
 .add-show-btn:hover {
-  color: #ff6a00;
-  border-color: #ff6a00;
+  color: #120017;
+  background-color: #ffe89e;
+  border-color: #ffe89e;
   transform: scale(1.01);
+}
+
+.add-show-btn:active {
+  color: #120017;
+  background-color: #ff6a00;
+  border-color: #ff6a00;
 }
 
 /* Mobile styles */
 @media (max-width: 768px) {
   main {
     padding-bottom: 2rem !important;
+  }
+  
+  header .container {
+    gap: 0.75rem !important;
+  }
+  
+  header h1 {
+    font-size: 2rem !important;
+  }
+  
+  .add-show-btn {
+    padding: 0.4rem 0.8rem !important;
+    white-space: nowrap;
   }
 }
 
@@ -181,9 +201,16 @@ form button[type="submit"] {
 }
 
 form button[type="submit"]:hover {
-  color: #ff6a00;
-  border-color: #ff6a00;
+  color: #120017;
+  background-color: #ffe89e;
+  border-color: #ffe89e;
   transform: scale(1.01);
+}
+
+form button[type="submit"]:active {
+  color: #120017;
+  background-color: #ff6a00;
+  border-color: #ff6a00;
 }
 
 /* --- Badge Styling --- */
@@ -223,7 +250,14 @@ form button[type="submit"]:hover {
 }
 
 .rsvp-button:hover {
-  color: #ff6a00;
+  color: #120017;
+  background-color: #ffe89e;
+  border-color: #ffe89e;
+}
+
+.rsvp-button:active {
+  color: #120017;
+  background-color: #ff6a00;
   border-color: #ff6a00;
 }
 
@@ -263,9 +297,16 @@ button, .button {
 }
 
 button:hover, .button:hover {
-  color: #ff6a00;
-  border-color: #ff6a00;
+  color: #120017;
+  background-color: #ffe89e;
+  border-color: #ffe89e;
   transform: scale(1.01);
+}
+
+button:active, .button:active {
+  color: #120017;
+  background-color: #ff6a00;
+  border-color: #ff6a00;
 }
 
 p {

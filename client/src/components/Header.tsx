@@ -18,7 +18,7 @@ export default function Header() {
   return (
     <>
       <header className="relative w-full z-50 py-8">
-        <div className="container mx-auto px-4 flex justify-between items-center">
+        <div className="container mx-auto px-4 flex justify-between items-center" style={{ gap: '1rem' }}>
           <Link href="/">
             <div className="flex items-center space-x-3 cursor-pointer">
               {/* Moon and star icons from the design, now grouped with text */}
