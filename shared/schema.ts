@@ -82,7 +82,7 @@ export const neighborhoods = [
   "Financial District",
   "Chinatown",
   "Other"
-];
+] as const;
 
 export const genres = [
   "Rock",
@@ -100,12 +100,7 @@ export const genres = [
   "Pop",
   "Experimental",
   "Acoustic"
-];
+] as const;
 
-// Create type-safe enums using a different approach
-export const neighborhoodSchema = z.string().refine(val => neighborhoods.includes(val), {
-  message: "Invalid neighborhood selection"
-});
-export const genreSchema = z.string().refine(val => genres.includes(val), {
-  message: "Invalid genre selection"
-});
+export const neighborhoodSchema = z.enum(neighborhoods);
+export const genreSchema = z.enum(genres);
