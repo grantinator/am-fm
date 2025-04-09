@@ -17,7 +17,8 @@ interface MulterRequest extends Request {
 const upload = multer({
   storage: multer.diskStorage({
     destination: (req: Express.Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
-      const uploadsDir = path.join(process.cwd(), "dist/public/uploads");
+      // Use a persistent uploads directory at the project root level
+      const uploadsDir = path.join(process.cwd(), "persistent_uploads");
       // Create uploads directory if it doesn't exist
       if (!fs.existsSync(uploadsDir)) {
         fs.mkdirSync(uploadsDir, { recursive: true });

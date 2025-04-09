@@ -1,5 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import path from "path";
+import fs from "fs";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { storage } from "./storage";
@@ -40,8 +41,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Serve uploaded files
-const uploadsDir = path.join(process.cwd(), "dist/public/uploads");
+// Serve uploaded files from persistent directory
+const uploadsDir = path.join(process.cwd(), "persistent_uploads");
 app.use("/uploads", express.static(uploadsDir, {
   setHeaders: (res, path) => {
     if (path.endsWith('.png')) {
@@ -55,6 +56,12 @@ app.use("/uploads", express.static(uploadsDir, {
     }
   }
 }));
+
+// Create uploads directory if it doesn't exist
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+  log('Created persistent uploads directory at: ' + uploadsDir);
+}
 
 (async () => {
   const server = await registerRoutes(app);
