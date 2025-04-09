@@ -254,22 +254,25 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
           {/* Neighborhood */}
           <div className="space-y-2">
             <Label htmlFor="neighborhood">Neighborhood</Label>
-            <Select
-              onValueChange={(value) => form.setValue("neighborhood", value)}
-              defaultValue={form.getValues("neighborhood") || undefined}
+            {/* Replace Select component with a standard HTML select for better stability */}
+            <select
+              id="neighborhood"
+              className="flex h-10 w-full rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              style={{ 
+                borderColor: "var(--subtle-accent)", 
+                backgroundColor: "var(--secondary-bg)",
+                color: "var(--text-color)"
+              }}
+              value={form.getValues("neighborhood") || ""}
+              onChange={(e) => form.setValue("neighborhood", e.target.value)}
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Select neighborhood" />
-              </SelectTrigger>
-              <SelectContent>
-                {/* Convert readonly tuple to regular array to avoid runtime errors */}
-                {Array.from(neighborhoods).map((neighborhood) => (
-                  <SelectItem key={neighborhood} value={neighborhood}>
-                    {neighborhood}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              <option value="">Select neighborhood</option>
+              {[...neighborhoods].map((neighborhood) => (
+                <option key={neighborhood} value={neighborhood}>
+                  {neighborhood}
+                </option>
+              ))}
+            </select>
             {form.formState.errors.neighborhood && (
               <p className="text-sm text-red-500">{form.formState.errors.neighborhood.message}</p>
             )}
