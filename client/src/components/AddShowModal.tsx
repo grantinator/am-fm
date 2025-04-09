@@ -12,7 +12,6 @@ import { useToast } from "@/hooks/use-toast";
 import { eventFormSchema, EventFormData, neighborhoods, genres } from "@shared/schema";
 import { useCreateEvent } from "@/hooks/use-events";
 import { X, Upload, Image } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface AddShowModalProps {
   isOpen: boolean;
@@ -254,22 +253,19 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
           {/* Neighborhood */}
           <div className="space-y-2">
             <Label htmlFor="neighborhood">Neighborhood</Label>
-            <Select
-              onValueChange={(value) => form.setValue("neighborhood", value)}
-              defaultValue={form.getValues("neighborhood") || undefined}
+            <select
+              id="neighborhood"
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              value={form.getValues("neighborhood") || ""}
+              onChange={(e) => form.setValue("neighborhood", e.target.value)}
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Select neighborhood" />
-              </SelectTrigger>
-              <SelectContent>
-                {/* Convert readonly tuple to regular array to avoid runtime errors */}
-                {Array.from(neighborhoods).map((neighborhood) => (
-                  <SelectItem key={neighborhood} value={neighborhood}>
-                    {neighborhood}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              <option value="" disabled>Select neighborhood</option>
+              {neighborhoods.map((neighborhood) => (
+                <option key={neighborhood} value={neighborhood}>
+                  {neighborhood}
+                </option>
+              ))}
+            </select>
             {form.formState.errors.neighborhood && (
               <p className="text-sm text-red-500">{form.formState.errors.neighborhood.message}</p>
             )}
@@ -279,12 +275,14 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
           <div className="space-y-2">
             <Label>Music Type/Genre *</Label>
             <div className="grid grid-cols-3 gap-2">
-              {Array.from(genres).map((genre) => (
+              {genres.map((genre) => (
                 <div key={genre} className="flex items-center space-x-2">
-                  <Checkbox
+                  <input
+                    type="checkbox"
                     id={`genre-${genre}`}
                     checked={selectedGenres.includes(genre)}
-                    onCheckedChange={() => handleGenreChange(genre)}
+                    onChange={() => handleGenreChange(genre)}
+                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
                   />
                   <label
                     htmlFor={`genre-${genre}`}
