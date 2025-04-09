@@ -142,13 +142,20 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
   };
   
   const handleGenreChange = (genre: string) => {
-    const updatedGenres = selectedGenres.includes(genre)
-      ? selectedGenres.filter(g => g !== genre)
-      : [...selectedGenres, genre];
+    // Check if this genre is already selected
+    const isSelected = selectedGenres.includes(genre);
     
+    // Update the selected genres array based on whether the genre was checked or unchecked
+    const updatedGenres = isSelected
+      ? selectedGenres.filter(g => g !== genre) // Remove genre if already selected
+      : [...selectedGenres, genre];             // Add genre if not already selected
+    
+    // Update state and form
     setSelectedGenres(updatedGenres);
-    // Also update the form value directly
     form.setValue("genres", updatedGenres);
+    
+    // Force validation update
+    form.trigger("genres");
   };
   
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -255,20 +262,24 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
                 <SelectValue placeholder="Select neighborhood" />
               </SelectTrigger>
               <SelectContent>
-                {neighborhoods.map((neighborhood) => (
+                {/* Convert readonly tuple to regular array to avoid runtime errors */}
+                {Array.from(neighborhoods).map((neighborhood) => (
                   <SelectItem key={neighborhood} value={neighborhood}>
                     {neighborhood}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+            {form.formState.errors.neighborhood && (
+              <p className="text-sm text-red-500">{form.formState.errors.neighborhood.message}</p>
+            )}
           </div>
           
           {/* Event Type/Genre */}
           <div className="space-y-2">
             <Label>Music Type/Genre *</Label>
             <div className="grid grid-cols-3 gap-2">
-              {genres.map((genre) => (
+              {Array.from(genres).map((genre) => (
                 <div key={genre} className="flex items-center space-x-2">
                   <Checkbox
                     id={`genre-${genre}`}
