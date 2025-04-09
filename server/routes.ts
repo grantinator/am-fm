@@ -46,6 +46,24 @@ const upload = multer({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Serve uploaded images from persistent_uploads directory
+  app.use('/uploads', (req, res, next) => {
+    // Redirect /uploads to persistent_uploads for image serving
+    const requestedFile = req.path;
+    const filePath = path.join(process.cwd(), 'persistent_uploads', requestedFile);
+    
+    // Check if file exists
+    fs.access(filePath, fs.constants.F_OK, (err) => {
+      if (err) {
+        console.error(`Image not found: ${filePath}`);
+        return res.status(404).send('Image not found');
+      }
+      
+      // Serve the file from persistent_uploads
+      res.sendFile(filePath);
+    });
+  });
+
   // Get all events
   app.get("/api/events", async (req, res) => {
     try {
@@ -83,7 +101,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Add imageUrl if an image was uploaded
       if (req.file) {
-        // Ensure the path starts with a leading slash
+        // We're using persistent_uploads for storage but still using /uploads in URLs for backward compatibility
         eventData.imageUrl = `/uploads/${req.file.filename}`;
         console.log('Image URL set to:', eventData.imageUrl);
       }
@@ -236,6 +254,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to update attendance" });
     }
   });
+  
+  // Admin routes for cleaning up events (only in development)
+  if (process.env.NODE_ENV !== 'production') {
+    // Remove all events with Unsplash images
+    app.delete("/api/admin/events/unsplash", async (req, res) => {
+      try {
+        const eventsRemoved = await storage.cleanUnsplashEvents();
+        res.json({ message: `Successfully removed ${eventsRemoved} events with Unsplash images` });
+      } catch (error) {
+        res.status(500).json({ message: "Failed to clean events with Unsplash images" });
+      }
+    });
+    
+    // Remove all events with seetickets images
+    app.delete("/api/admin/events/seetickets", async (req, res) => {
+      try {
+        const eventsRemoved = await storage.cleanEventsByImagePattern('seetickets');
+        res.json({ message: `Successfully removed ${eventsRemoved} events with seetickets images` });
+      } catch (error) {
+        res.status(500).json({ message: "Failed to clean events with seetickets images" });
+      }
+    });
+    
+    // Remove all events
+    app.delete("/api/admin/events/all", async (req, res) => {
+      try {
+        const eventsRemoved = await storage.cleanAllEvents();
+        res.json({ message: `Successfully removed all ${eventsRemoved} events` });
+      } catch (error) {
+        res.status(500).json({ message: "Failed to clean all events" });
+      }
+    });
+  }
 
   const httpServer = createServer(app);
 

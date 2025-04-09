@@ -23,6 +23,10 @@ export interface IStorage {
   getEventsByDate(startDate: Date, endDate?: Date): Promise<EventWithGenres[]>;
   searchEvents(query: string): Promise<EventWithGenres[]>;
   incrementAttendees(eventId: number): Promise<void>;
+  // Admin methods for cleaning up events
+  cleanUnsplashEvents(): Promise<number>; // Returns number of events removed
+  cleanEventsByImagePattern(pattern: string): Promise<number>; // Returns number of events removed by pattern
+  cleanAllEvents(): Promise<number>; // Returns number of events removed
 }
 
 export class MemStorage implements IStorage {
@@ -195,6 +199,53 @@ export class MemStorage implements IStorage {
       events[eventIndex].attendees = (events[eventIndex].attendees || 0) + 1;
       await this.saveEventsToDb(events);
     }
+  }
+  
+  async cleanUnsplashEvents(): Promise<number> {
+    return this.cleanEventsByImagePattern('unsplash.com');
+  }
+  
+  async cleanEventsByImagePattern(pattern: string): Promise<number> {
+    // Get all events
+    const events = await this.getEventsFromDb();
+    
+    // Find events with the specified image pattern
+    const matchingEvents = events.filter(event => {
+      return event.imageUrl && event.imageUrl.includes(pattern);
+    });
+    
+    console.log(`Found ${matchingEvents.length} events with "${pattern}" in image URLs to remove.`);
+    
+    if (matchingEvents.length === 0) {
+      return 0;
+    }
+    
+    // Get IDs of events to remove
+    const eventIdsToRemove = matchingEvents.map(event => event.id);
+    
+    // Filter out events with matching pattern in image URLs
+    const remainingEvents = events.filter(event => {
+      return !(event.imageUrl && event.imageUrl.includes(pattern));
+    });
+    
+    // Save the cleaned events list
+    await this.saveEventsToDb(remainingEvents);
+    
+    return matchingEvents.length;
+  }
+  
+  async cleanAllEvents(): Promise<number> {
+    // Get current count of events
+    const events = await this.getEventsFromDb();
+    const count = events.length;
+    
+    // Clear all events
+    await this.saveEventsToDb([]);
+    
+    // Reset the event ID counter
+    this.eventIdCounter = 1;
+    
+    return count;
   }
 }
 
