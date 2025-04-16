@@ -1,42 +1,35 @@
-import { 
-  events, 
-  type Event, 
-  type InsertEvent, 
-  type User, 
-  type InsertUser, 
-  type EventWithGenres 
+import * as schema from "@shared/schema";
+import {
+  events,
+  eventGenres,
+  type Event,
+  type InsertEvent,
+  type EventWithGenres
 } from "@shared/schema";
-import Database from "@replit/database";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { eq } from "drizzle-orm";
+import 'dotenv/config'
 
-const db = new Database();
-const EVENTS_KEY = "events";
+if (!process.env.DATABASE_URL) {
+  throw new Error(
+    "DATABASE_URL must be set. Did you forget to provision a database?",
+  );
+}
+
+const db = drizzle(process.env.DATABASE_URL, { schema: schema });
 
 export interface IStorage {
-  getUser(id: number): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
   getAllEvents(): Promise<EventWithGenres[]>;
   getEvent(id: number): Promise<EventWithGenres | undefined>;
   createEvent(event: InsertEvent, genres: string[]): Promise<EventWithGenres>;
-  getEventsByNeighborhood(neighborhood: string): Promise<EventWithGenres[]>;
-  getEventsByGenre(genre: string): Promise<EventWithGenres[]>;
   getEventsByDate(startDate: Date, endDate?: Date): Promise<EventWithGenres[]>;
-  searchEvents(query: string): Promise<EventWithGenres[]>;
   incrementAttendees(eventId: number): Promise<void>;
-  // Admin methods for cleaning up events
-  cleanUnsplashEvents(): Promise<number>; // Returns number of events removed
-  cleanEventsByImagePattern(pattern: string): Promise<number>; // Returns number of events removed by pattern
-  cleanAllEvents(): Promise<number>; // Returns number of events removed
 }
 
 export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private userIdCounter: number;
   private eventIdCounter: number = 1;
 
   constructor() {
-    this.users = new Map();
-    this.userIdCounter = 1;
     this.initCounters();
   }
 
@@ -47,13 +40,13 @@ export class MemStorage implements IStorage {
 
   private async getEventsFromDb(): Promise<EventWithGenres[]> {
     try {
-      const result = await db.get(EVENTS_KEY);
+      const result = await db.select().from(events).leftJoin(eventGenres, eq(events.id, eventGenres.eventId));
       console.log('Raw result from database:', result);
-      
+
       if (!result) {
         return [];
       }
-      
+
       // Check if the result is already an array
       if (Array.isArray(result)) {
         return result.map((event: any) => ({
@@ -64,18 +57,7 @@ export class MemStorage implements IStorage {
           genres: Array.isArray(event.genres) ? event.genres : []
         }));
       }
-      
-      // If it's not an array, it might be an object with a "value" property (Replit DB format)
-      if (result.value && Array.isArray(result.value)) {
-        return result.value.map((event: any) => ({
-          ...event,
-          date: new Date(event.date),
-          createdAt: new Date(event.createdAt),
-          // Ensure genres is always an array
-          genres: Array.isArray(event.genres) ? event.genres : []
-        }));
-      }
-      
+
       console.error("Invalid events data in database:", result);
       return [];
     } catch (error) {
@@ -84,44 +66,63 @@ export class MemStorage implements IStorage {
     }
   }
 
-  private async saveEventsToDb(events: EventWithGenres[]) {
+  private async saveEventsToDb(eventsWithGenres: EventWithGenres[]) {
+    const results: (EventWithGenres | null)[] = [];
+    for (const eventWithGenres of eventsWithGenres) {
+      try {
+        const result = await this.saveEventToDb(eventWithGenres);
+        results.push(result);
+      } catch (error) {
+        console.log("Failed saving event to db with error: " + error);
+        results.push(null);
+      }
+    }
+    return results;
+  }
+
+  private async saveEventToDb(eventWithGenres: EventWithGenres) {
     try {
-      // Prepare events for storage - convert Date objects to strings
-      const eventsForStorage = events.map(event => ({
-        ...event,
-        date: event.date instanceof Date ? event.date.toISOString() : event.date,
-        createdAt: event.createdAt instanceof Date ? event.createdAt.toISOString() : event.createdAt,
-      }));
-      
-      // Set the events in the database
-      await db.set(EVENTS_KEY, eventsForStorage);
-      console.log(`Saved ${events.length} events to database`);
+      // Prepare event data for insertion into the 'events' table
+      const eventForStorage: InsertEvent = {
+        title: eventWithGenres.title,
+        eventDate: eventWithGenres.eventDate,
+        startTime: eventWithGenres.startTime,
+        venueName: eventWithGenres.venueName,
+        venueAddress: eventWithGenres.venueAddress,
+        neighborhood: eventWithGenres.neighborhood,
+        imageUri: eventWithGenres.imageUri,
+        price: eventWithGenres.price,
+        attendees: eventWithGenres.attendees,
+      };
+
+      const [insertedEvent] = await db.insert(events).values(eventForStorage).returning({ id: events.id });
+
+      if (insertedEvent && insertedEvent.id) {
+        const eventId = insertedEvent.id;
+
+        // Insert the genres for the event into the 'event_genres' table
+        const genreInsertPromises = eventWithGenres.genres.map((genre) =>
+          db.insert(eventGenres).values({ eventId: eventId, genre })
+        );
+
+        await Promise.all(genreInsertPromises); // Execute all genre insertions in parallel
+
+        console.log(`Successfully inserted event with ID: ${eventId} and its genres.`);
+        return { ...eventWithGenres, id: eventId }; // Return the inserted event with its ID
+      } else {
+        throw new Error("Failed to insert event or retrieve its ID.");
+      }
+
     } catch (error) {
-      console.error("Error saving events to database:", error);
-      throw new Error("Failed to save events to database");
+      console.error("Error saving event to database:", error);
+      throw new Error("Failed to save event to database");
     }
   }
 
-  async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
-  }
-
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.userIdCounter++;
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
-  }
 
   async getAllEvents(): Promise<EventWithGenres[]> {
     const events = await this.getEventsFromDb();
-    return events.sort((a, b) => a.date.getTime() - b.date.getTime());
+    return events.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
   }
 
   async getEvent(id: number): Promise<EventWithGenres | undefined> {
@@ -134,34 +135,22 @@ export class MemStorage implements IStorage {
     const id = this.eventIdCounter++;
 
     const newEvent: EventWithGenres = {
-      ...insertEvent,
       id,
+      title: insertEvent.title,
+      eventDate: insertEvent.eventDate,
+      startTime: insertEvent.startTime,
+      venueName: insertEvent.venueName ?? null,
+      venueAddress: insertEvent.venueAddress,
+      neighborhood: insertEvent.neighborhood || null,
+      imageUri: insertEvent.imageUri || null,
+      price: insertEvent.price !== undefined ? insertEvent.price : null,
       attendees: 0,
       createdAt: new Date(),
-      endTime: insertEvent.endTime || null,
-      neighborhood: insertEvent.neighborhood || null,
-      description: insertEvent.description || null,
-      imageUrl: insertEvent.imageUrl || null,
-      price: insertEvent.price !== undefined ? insertEvent.price : null,
       genres
     };
 
     await this.saveEventsToDb([...events, newEvent]);
     return newEvent;
-  }
-
-  async getEventsByNeighborhood(neighborhood: string): Promise<EventWithGenres[]> {
-    const events = await this.getEventsFromDb();
-    return events
-      .filter(event => event.neighborhood?.toLowerCase() === neighborhood.toLowerCase())
-      .sort((a, b) => a.date.getTime() - b.date.getTime());
-  }
-
-  async getEventsByGenre(genre: string): Promise<EventWithGenres[]> {
-    const events = await this.getEventsFromDb();
-    return events
-      .filter(event => event.genres.some(g => g.toLowerCase() === genre.toLowerCase()))
-      .sort((a, b) => a.date.getTime() - b.date.getTime());
   }
 
   async getEventsByDate(startDate: Date, endDate?: Date): Promise<EventWithGenres[]> {
@@ -170,26 +159,12 @@ export class MemStorage implements IStorage {
 
     return events
       .filter(event => {
-        const eventDate = new Date(event.date);
+        const eventDate = new Date(event.eventDate);
         return eventDate >= startDate && eventDate <= end;
       })
-      .sort((a, b) => a.date.getTime() - b.date.getTime());
+      .sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
   }
 
-  async searchEvents(query: string): Promise<EventWithGenres[]> {
-    const events = await this.getEventsFromDb();
-    const lowercaseQuery = query.toLowerCase();
-    
-    return events.filter(event => {
-      return (
-        event.title?.toLowerCase().includes(lowercaseQuery) ||
-        event.description?.toLowerCase().includes(lowercaseQuery) ||
-        event.venueName?.toLowerCase().includes(lowercaseQuery) ||
-        event.neighborhood?.toLowerCase().includes(lowercaseQuery) ||
-        event.genres.some(genre => genre.toLowerCase().includes(lowercaseQuery))
-      );
-    }).sort((a, b) => a.date.getTime() - b.date.getTime());
-  }
 
   async incrementAttendees(eventId: number): Promise<void> {
     const events = await this.getEventsFromDb();
@@ -199,53 +174,6 @@ export class MemStorage implements IStorage {
       events[eventIndex].attendees = (events[eventIndex].attendees || 0) + 1;
       await this.saveEventsToDb(events);
     }
-  }
-  
-  async cleanUnsplashEvents(): Promise<number> {
-    return this.cleanEventsByImagePattern('unsplash.com');
-  }
-  
-  async cleanEventsByImagePattern(pattern: string): Promise<number> {
-    // Get all events
-    const events = await this.getEventsFromDb();
-    
-    // Find events with the specified image pattern
-    const matchingEvents = events.filter(event => {
-      return event.imageUrl && event.imageUrl.includes(pattern);
-    });
-    
-    console.log(`Found ${matchingEvents.length} events with "${pattern}" in image URLs to remove.`);
-    
-    if (matchingEvents.length === 0) {
-      return 0;
-    }
-    
-    // Get IDs of events to remove
-    const eventIdsToRemove = matchingEvents.map(event => event.id);
-    
-    // Filter out events with matching pattern in image URLs
-    const remainingEvents = events.filter(event => {
-      return !(event.imageUrl && event.imageUrl.includes(pattern));
-    });
-    
-    // Save the cleaned events list
-    await this.saveEventsToDb(remainingEvents);
-    
-    return matchingEvents.length;
-  }
-  
-  async cleanAllEvents(): Promise<number> {
-    // Get current count of events
-    const events = await this.getEventsFromDb();
-    const count = events.length;
-    
-    // Clear all events
-    await this.saveEventsToDb([]);
-    
-    // Reset the event ID counter
-    this.eventIdCounter = 1;
-    
-    return count;
   }
 }
 

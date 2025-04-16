@@ -1,34 +1,32 @@
-import { pgTable, text, serial, integer, boolean, timestamp, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, date, bigint, integer, numeric, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
-});
+// export const users = pgTable("users", {
+//   id: serial("id").primaryKey(),
+//   username: text("username").notNull().unique(),
+//   password: text("password").notNull(),
+// });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
-});
+// export const insertUserSchema = createInsertSchema(users).pick({
+//   username: true,
+//   password: true,
+// });
 
-export type InsertUser = z.infer<typeof insertUserSchema>;
-export type User = typeof users.$inferSelect;
+// export type InsertUser = z.infer<typeof insertUserSchema>;
+// export type User = typeof users.$inferSelect;
 
 // Event schema for concerts
 export const events = pgTable("events", {
-  id: serial("id").primaryKey(),
+  id: bigint("id", { mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
   title: text("title").notNull(),
-  date: timestamp("date").notNull(),
-  startTime: text("start_time").notNull(),
-  endTime: text("end_time"),
-  venueName: text("venue_name").notNull(),
+  eventDate: date("event_date").notNull(),
+  startTime: timestamp("start_time", { withTimezone: true }).notNull(),
+  venueName: text("venue_name"),
   venueAddress: text("venue_address").notNull(),
   neighborhood: text("neighborhood"),
-  description: text("description"),
-  imageUrl: text("image_url"),
-  price: integer("price").default(0), // Added price field
+  imageUri: text("image_uri"),
+  ticket_price: numeric("ticket_price", { scale: 10, precision: 2 }),
   attendees: integer("attendees").default(0),
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -39,31 +37,15 @@ export const eventGenres = pgTable("event_genres", {
   genre: text("genre").notNull(),
 });
 
-// Create insert schema
 export const insertEventSchema = createInsertSchema(events).omit({
-  id: true,
-  attendees: true,
   createdAt: true,
-});
-
-// Add additional validation
-export const eventFormSchema = insertEventSchema.extend({
-  // Accept both Date objects and strings that can be converted to valid dates
-  date: z.union([
-    z.date(),
-    z.string().refine((val) => !isNaN(new Date(val).getTime()), {
-      message: "Invalid date format",
-    }),
-  ]),
-  genres: z.array(z.string()).min(1, "At least one genre is required"),
-  image: z.instanceof(File, { message: "Event image is required" }).optional(),
+  imageUri: true,
 });
 
 // Types
 export type InsertEvent = z.infer<typeof insertEventSchema>;
 export type Event = typeof events.$inferSelect;
 export type EventWithGenres = Event & { genres: string[] };
-export type EventFormData = z.infer<typeof eventFormSchema>;
 
 // Neighborhood and genre options
 export const neighborhoods = [

@@ -2,54 +2,80 @@ import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { eventFormSchema, EventFormData, neighborhoods, genres } from "@shared/schema";
+import { neighborhoods, genres } from "@shared/schema";
 import { useCreateEvent } from "@/hooks/use-events";
 import { X, Upload, Image } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { z } from 'zod';
 
 interface AddShowModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+interface EventFormValues {
+  title: string;
+  eventDate: Date;
+  startTime: Date;
+  venueName: string;
+  venueAddress: string;
+  neighborhood: string;
+  genres: string[];
+  ticket_price: number;
+  image?: File;
+}
+
+const frontendEventFormSchema = z.object({
+  title: z.string().min(3, { message: "Title must be at least 3 characters" }),
+  eventDate: z.date(),
+  startTime: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/, { message: "Invalid time format (HH:mm or HH:mm:ss)" }),
+  venueName: z.string(),
+  venueAddress: z.string(),
+  neighborhood: z.string(),
+  genres: z.array(z.string()).min(1, { message: "At least one genre is required" }),
+  ticket_price: z.number().min(0, { message: "Price cannot be negative" }),
+  image: z.instanceof(File).optional(), // Optional image upload
+});
+
+// Infer the TypeScript type from the Zod schema
+type FrontendEventFormData = z.infer<typeof frontendEventFormSchema>;
+
 export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
   const { toast } = useToast();
   const createEvent = useCreateEvent();
-  
+
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  
-  const form = useForm<EventFormData>({
-    resolver: zodResolver(eventFormSchema),
+
+  const form = useForm<FrontendEventFormData>({
+    resolver: zodResolver(frontendEventFormSchema),
     defaultValues: {
       title: "",
-      date: new Date(),
-      startTime: "",
-      endTime: "",
+      eventDate: new Date(),
+      startTime: new Date(),
       venueName: "",
       venueAddress: "",
       neighborhood: "",
-      description: "",
       genres: [],
-      price: 0,
+      ticket_price: 0,
+      image: undefined, // Add default for the optional image field
     },
-    mode: "onChange", // Validate on change for immediate feedback
+    mode: "onChange",
   });
-  
+
   // Watch for genres changes in the form
   useEffect(() => {
     // Initialize the form with any selected genres
     if (selectedGenres.length > 0) {
       form.setValue("genres", selectedGenres);
     }
-    
+
     // Setup a subscription to watch for genre changes
     const subscription = form.watch((value, { name }) => {
       // If the genres field changed in the form, update our local state
@@ -60,11 +86,11 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
         }
       }
     });
-    
+
     // Cleanup subscription
     return () => subscription.unsubscribe();
   }, [form, selectedGenres]);
-  
+
   const onSubmit = async (data: EventFormData) => {
     try {
       // Debug form validation
@@ -74,11 +100,11 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
         genres: data.genres || selectedGenres,
         image: data.image ? data.image.name : null
       });
-      
+
       if (form.formState.errors) {
         console.error("Validation errors:", form.formState.errors);
       }
-      
+
       // Check if genres are empty and manually set them if needed
       if (!data.genres || data.genres.length === 0) {
         if (selectedGenres.length > 0) {
@@ -87,14 +113,14 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
           data.genres = selectedGenres;
         }
       }
-      
+
       const formData = new FormData();
-      
+
       // Add image if exists
       if (data.image) {
         formData.append("image", data.image);
       }
-      
+
       // Ensure date is a proper Date object
       let dateObj = data.date;
       if (typeof dateObj === 'string') {
@@ -105,9 +131,9 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
           throw new Error("Invalid date format");
         }
       }
-      
+
       console.log("Date before submission:", dateObj);
-      
+
       // Prepare form data with properly formatted date
       const eventData = {
         ...data,
@@ -115,18 +141,18 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
         // Use the form's genres directly (they should be synced with selectedGenres)
         genres: data.genres,
       };
-      
+
       // Add event data as JSON
       formData.append("eventData", JSON.stringify(eventData));
-      
+
       // Submit the form
       await createEvent.mutateAsync(formData);
-      
+
       toast({
         title: "Success!",
         description: "Your show has been posted",
       });
-      
+
       // Close modal and reset form
       onClose();
       form.reset();
@@ -140,29 +166,29 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
       });
     }
   };
-  
+
   const handleGenreChange = (genre: string) => {
     // Check if this genre is already selected
     const isSelected = selectedGenres.includes(genre);
-    
+
     // Update the selected genres array based on whether the genre was checked or unchecked
     const updatedGenres = isSelected
       ? selectedGenres.filter(g => g !== genre) // Remove genre if already selected
       : [...selectedGenres, genre];             // Add genre if not already selected
-    
+
     // Update state and form
     setSelectedGenres(updatedGenres);
     form.setValue("genres", updatedGenres);
-    
+
     // Force validation update
     form.trigger("genres");
   };
-  
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       form.setValue("image", file);
-      
+
       // Create image preview
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -171,7 +197,7 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
       reader.readAsDataURL(file);
     }
   };
-  
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
@@ -181,7 +207,7 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
             Share details about an upcoming local concert
           </DialogDescription>
         </DialogHeader>
-        
+
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           {/* Show Name */}
           <div className="space-y-2">
@@ -196,7 +222,7 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
               <p className="text-sm text-red-500">{form.formState.errors.title.message}</p>
             )}
           </div>
-          
+
           {/* Date & Time */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -224,7 +250,7 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
               )}
             </div>
           </div>
-          
+
           {/* Venue */}
           <div className="space-y-2">
             <Label htmlFor="venueName">Venue Name *</Label>
@@ -237,7 +263,7 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
               <p className="text-sm text-red-500">{form.formState.errors.venueName.message}</p>
             )}
           </div>
-          
+
           {/* Address */}
           <div className="space-y-2">
             <Label htmlFor="venueAddress">Address *</Label>
@@ -250,7 +276,7 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
               <p className="text-sm text-red-500">{form.formState.errors.venueAddress.message}</p>
             )}
           </div>
-          
+
           {/* Neighborhood */}
           <div className="space-y-2">
             <Label htmlFor="neighborhood">Neighborhood</Label>
@@ -258,8 +284,8 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
             <select
               id="neighborhood"
               className="flex h-10 w-full rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              style={{ 
-                borderColor: "var(--subtle-accent)", 
+              style={{
+                borderColor: "var(--subtle-accent)",
                 backgroundColor: "var(--secondary-bg)",
                 color: "var(--text-color)"
               }}
@@ -277,7 +303,7 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
               <p className="text-sm text-red-500">{form.formState.errors.neighborhood.message}</p>
             )}
           </div>
-          
+
           {/* Event Type/Genre */}
           <div className="space-y-2">
             <Label>Music Type/Genre *</Label>
@@ -302,14 +328,14 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
               <p className="text-sm text-red-500">{form.formState.errors.genres.message}</p>
             )}
           </div>
-          
+
           {/* Photo Upload */}
           <div className="space-y-2">
             <Label>Event Photo/Poster *</Label>
-            <div 
+            <div
               className="border-2 border-dashed rounded-md px-6 py-8 text-center"
-              style={{ 
-                borderColor: "var(--subtle-accent)", 
+              style={{
+                borderColor: "var(--subtle-accent)",
                 backgroundColor: "var(--secondary-bg)",
                 cursor: "pointer"
               }}
@@ -376,7 +402,7 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
               <p className="text-sm text-red-500">{form.formState.errors.image.message}</p>
             )}
           </div>
-          
+
           {/* Price */}
           <div className="space-y-2">
             <Label htmlFor="price">Ticket Price ($)</Label>
@@ -393,7 +419,7 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
               <p className="text-sm text-red-500">{form.formState.errors.price.message}</p>
             )}
           </div>
-          
+
           {/* Description */}
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
@@ -404,7 +430,7 @@ export default function AddShowModal({ isOpen, onClose }: AddShowModalProps) {
               {...form.register("description")}
             />
           </div>
-          
+
           {/* Submit Button */}
           <Button
             type="submit"

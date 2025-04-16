@@ -29,11 +29,6 @@ app.use((req, res, next) => {
         logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       }
 
-      // Temporarily remove truncation for debugging
-      // if (logLine.length > 80) {
-      //   logLine = logLine.slice(0, 79) + "…";
-      // }
-
       log(logLine);
     }
   });
@@ -93,13 +88,13 @@ if (!fs.existsSync(uploadsDir)) {
     reusePort: true,
   }, () => {
     log(`serving on port ${port}`);
-    
+
     // Initialize venue scraper manager
     const scraperManager = new VenueScraperManager(storage);
-    
+
     // Schedule recurring scrapes (every 6 hours by default)
     scraperManager.scheduleRecurring();
-    
+
     // Log that scrapers have been initialized
     log('Venue scrapers initialized and scheduled', 'scraper');
   });

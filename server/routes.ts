@@ -2,7 +2,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertEventSchema, eventFormSchema } from "@shared/schema";
+import { insertEventSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -51,14 +51,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     // Redirect /uploads to persistent_uploads for image serving
     const requestedFile = req.path;
     const filePath = path.join(process.cwd(), 'persistent_uploads', requestedFile);
-    
+
     // Check if file exists
     fs.access(filePath, fs.constants.F_OK, (err) => {
       if (err) {
         console.error(`Image not found: ${filePath}`);
         return res.status(404).send('Image not found');
       }
-      
+
       // Serve the file from persistent_uploads
       res.sendFile(filePath);
     });
@@ -74,74 +74,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get single event by ID
-  app.get("/api/events/:id", async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid event ID" });
-      }
-
-      const event = await storage.getEvent(id);
-      if (!event) {
-        return res.status(404).json({ message: "Event not found" });
-      }
-
-      res.json(event);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to retrieve event" });
-    }
-  });
 
   // Create new event with image upload
   app.post("/api/events", upload.single("image"), async (req: MulterRequest, res) => {
     try {
       // Parse event data from form
       const eventData = JSON.parse(req.body.eventData);
-      
+
       // Add imageUrl if an image was uploaded
       if (req.file) {
         // We're using persistent_uploads for storage but still using /uploads in URLs for backward compatibility
         eventData.imageUrl = `/uploads/${req.file.filename}`;
         console.log('Image URL set to:', eventData.imageUrl);
       }
-      
-      // Combine date and time into a single Date object
-      if (eventData.date && eventData.startTime) {
-        const dateStr = typeof eventData.date === 'string' ? eventData.date : eventData.date.toISOString().split('T')[0];
-        const [hours, minutes] = eventData.startTime.split(':');
-        
-        // Create date object combining the date and time
-        const combinedDate = new Date(dateStr);
-        combinedDate.setHours(parseInt(hours), parseInt(minutes));
-        
-        if (isNaN(combinedDate.getTime())) {
-          console.error('Invalid date/time format:', { date: eventData.date, time: eventData.startTime });
-          return res.status(400).json({ 
-            message: "Invalid date/time format", 
-            errors: { date: { _errors: ["Invalid date/time format"] } }
-          });
-        }
-        
-        eventData.date = combinedDate;
-      } else if (typeof eventData.date === 'object' && eventData.date !== null) {
-        // If it's a date-like object from JSON, convert to proper Date
-        if ('toISOString' in eventData.date) {
-          // It's already a Date object
-        } else {
-          // It's a date-like object (with year, month, day properties)
-          try {
-            eventData.date = new Date(eventData.date);
-          } catch (e) {
-            console.error('Error converting date object:', e);
-            return res.status(400).json({ 
-              message: "Invalid date object", 
-              errors: { date: { _errors: ["Invalid date format"] } }
-            });
-          }
-        }
-      }
-      
+      // TODO(grantbaum): Delete this block.
+      // // Combine date and time into a single Date object
+      // if (eventData.date && eventData.startTime) {
+      //   const dateStr = typeof eventData.date === 'string' ? eventData.date : eventData.date.toISOString().split('T')[0];
+      //   const [hours, minutes] = eventData.startTime.split(':');
+
+      //   // Create date object combining the date and time
+      //   const combinedDate = new Date(dateStr);
+      //   combinedDate.setHours(parseInt(hours), parseInt(minutes));
+
+      //   if (isNaN(combinedDate.getTime())) {
+      //     console.error('Invalid date/time format:', { date: eventData.date, time: eventData.startTime });
+      //     return res.status(400).json({
+      //       message: "Invalid date/time format",
+      //       errors: { date: { _errors: ["Invalid date/time format"] } }
+      //     });
+      //   }
+
+      //   eventData.date = combinedDate;
+      // } else if (typeof eventData.date === 'object' && eventData.date !== null) {
+      //   // If it's a date-like object from JSON, convert to proper Date
+      //   if ('toISOString' in eventData.date) {
+      //     // It's already a Date object
+      //   } else {
+      //     // It's a date-like object (with year, month, day properties)
+      //     try {
+      //       eventData.date = new Date(eventData.date);
+      //     } catch (e) {
+      //       console.error('Error converting date object:', e);
+      //       return res.status(400).json({
+      //         message: "Invalid date object",
+      //         errors: { date: { _errors: ["Invalid date format"] } }
+      //       });
+      //     }
+      //   }
+      // }
+
       // Log the date for debugging
       console.log('Processed date:', eventData.date);
 
@@ -149,18 +131,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const result = insertEventSchema.safeParse(eventData);
       if (!result.success) {
         console.log('Validation errors:', JSON.stringify(result.error.format(), null, 2));
-        return res.status(400).json({ 
-          message: "Invalid event data", 
-          errors: result.error.format() 
+        return res.status(400).json({
+          message: "Invalid event data",
+          errors: result.error.format()
         });
       }
 
       // Extract genres
       const { genres, ...validatedEvent } = eventData;
-      
+
       // Create the event in storage
       const createdEvent = await storage.createEvent(validatedEvent, genres || []);
-      
+
       res.status(201).json(createdEvent);
     } catch (error) {
       console.error("Error creating event:", error);
@@ -168,69 +150,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Filter events by neighborhood
-  app.get("/api/events/filter/neighborhood/:neighborhood", async (req, res) => {
-    try {
-      const { neighborhood } = req.params;
-      const events = await storage.getEventsByNeighborhood(neighborhood);
-      res.json(events);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to filter events by neighborhood" });
-    }
-  });
-
-  // Filter events by genre
-  app.get("/api/events/filter/genre/:genre", async (req, res) => {
-    try {
-      const { genre } = req.params;
-      const events = await storage.getEventsByGenre(genre);
-      res.json(events);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to filter events by genre" });
-    }
-  });
 
   // Filter events by date range
   app.get("/api/events/filter/date", async (req, res) => {
     try {
       const startDateStr = req.query.startDate as string;
       const endDateStr = req.query.endDate as string | undefined;
-      
+
       if (!startDateStr) {
         return res.status(400).json({ message: "Start date is required" });
       }
-      
+
       const startDate = new Date(startDateStr);
       const endDate = endDateStr ? new Date(endDateStr) : undefined;
-      
+
       if (isNaN(startDate.getTime())) {
         return res.status(400).json({ message: "Invalid start date" });
       }
-      
+
       if (endDate && isNaN(endDate.getTime())) {
         return res.status(400).json({ message: "Invalid end date" });
       }
-      
+
       const events = await storage.getEventsByDate(startDate, endDate);
       res.json(events);
     } catch (error) {
       res.status(500).json({ message: "Failed to filter events by date" });
-    }
-  });
-
-  // Search events
-  app.get("/api/events/search", async (req, res) => {
-    try {
-      const query = req.query.q as string;
-      
-      if (!query) {
-        return res.status(400).json({ message: "Search query is required" });
-      }
-      
-      const events = await storage.searchEvents(query);
-      res.json(events);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to search events" });
     }
   });
 
@@ -244,7 +189,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       await storage.incrementAttendees(id);
       const updatedEvent = await storage.getEvent(id);
-      
+
       if (!updatedEvent) {
         return res.status(404).json({ message: "Event not found" });
       }
@@ -254,39 +199,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to update attendance" });
     }
   });
-  
-  // Admin routes for cleaning up events (only in development)
-  if (process.env.NODE_ENV !== 'production') {
-    // Remove all events with Unsplash images
-    app.delete("/api/admin/events/unsplash", async (req, res) => {
-      try {
-        const eventsRemoved = await storage.cleanUnsplashEvents();
-        res.json({ message: `Successfully removed ${eventsRemoved} events with Unsplash images` });
-      } catch (error) {
-        res.status(500).json({ message: "Failed to clean events with Unsplash images" });
-      }
-    });
-    
-    // Remove all events with seetickets images
-    app.delete("/api/admin/events/seetickets", async (req, res) => {
-      try {
-        const eventsRemoved = await storage.cleanEventsByImagePattern('seetickets');
-        res.json({ message: `Successfully removed ${eventsRemoved} events with seetickets images` });
-      } catch (error) {
-        res.status(500).json({ message: "Failed to clean events with seetickets images" });
-      }
-    });
-    
-    // Remove all events
-    app.delete("/api/admin/events/all", async (req, res) => {
-      try {
-        const eventsRemoved = await storage.cleanAllEvents();
-        res.json({ message: `Successfully removed all ${eventsRemoved} events` });
-      } catch (error) {
-        res.status(500).json({ message: "Failed to clean all events" });
-      }
-    });
-  }
 
   const httpServer = createServer(app);
 
