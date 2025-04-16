@@ -90,8 +90,7 @@ export class MemStorage implements IStorage {
         venueName: eventWithGenres.venueName,
         venueAddress: eventWithGenres.venueAddress,
         neighborhood: eventWithGenres.neighborhood,
-        imageUri: eventWithGenres.imageUri,
-        price: eventWithGenres.price,
+        ticket_price: eventWithGenres.ticket_price,
         attendees: eventWithGenres.attendees,
       };
 
@@ -118,7 +117,6 @@ export class MemStorage implements IStorage {
       throw new Error("Failed to save event to database");
     }
   }
-
 
   async getAllEvents(): Promise<EventWithGenres[]> {
     const events = await this.getEventsFromDb();

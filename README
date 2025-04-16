@@ -2,7 +2,7 @@
 
 ## Setting up postgres 
 1. Install postgres with `brew install postgresql`
-2. I followed this video https://www.youtube.com/watch?v=RySuQtMiBxQ
+2. I followed this video https://www.youtube.com/watch?v=RySuQtMiBxQ to set up the user and database.
 3. Create a .env file in root and add `DATABASE_URL=postgres://<user>:<pass>@localhost:5432/<db_name>`with whatever values used in video
 4. In postgres copy paste the comamnd in create_table.sql to create the table. (its two commands you maybe want to run as two seperate ones)
 

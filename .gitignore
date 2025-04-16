@@ -5,3 +5,8 @@ server/public
 vite.config.ts.*
 *.tar.gz
 .env
+
+# amplify
+.amplify
+amplify_outputs*
+amplifyconfiguration*

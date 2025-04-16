@@ -10,6 +10,8 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+app.use(express.static(path.join(__dirname, '../client/build')));
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -57,6 +59,11 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
   log('Created persistent uploads directory at: ' + uploadsDir);
 }
+
+// Fallback for React Router
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+});
 
 (async () => {
   const server = await registerRoutes(app);
